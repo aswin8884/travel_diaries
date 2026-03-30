@@ -25,17 +25,17 @@ A full-stack travel platform built with **Django** and **React** that allows use
 ## 🚀 Setup
 
 ### 🔹 Backend
-
+```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  (Windows: venv\Scripts\activate)
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 
 ---
 
-### 🔹 Frontend
+🔹 Frontend
 
 cd frontend
 npm install
@@ -59,7 +59,3 @@ travel_diaries/
 * Create a superuser for admin access
 
 ---
-
-## 📄 License
-
-MIT License
