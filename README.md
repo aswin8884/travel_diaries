@@ -109,7 +109,3 @@ Frontend runs at: `http://localhost:5173`
 - JWT tokens are used for all authenticated API requests — the frontend handles token refresh automatically.
 
 ---
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
