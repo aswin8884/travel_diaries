@@ -49,6 +49,15 @@ travel_diaries/
 
 ---
 
+### 🔹 Clone the Repository
+
+```bash
+git clone https://github.com/your-username/travel_diaries.git
+cd travel_diaries
+```
+
+---
+
 ### 🔹 Backend Setup
 
 ```bash
@@ -100,3 +109,7 @@ Frontend runs at: `http://localhost:5173`
 - JWT tokens are used for all authenticated API requests — the frontend handles token refresh automatically.
 
 ---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
