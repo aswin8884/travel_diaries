@@ -24,8 +24,8 @@ A full-stack travel platform built with **Django** and **React** that allows use
 
 ## 🚀 Setup
 
-### 🔹 Backend
-```bash
+🔹 Backend
+
 cd backend
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
