@@ -24,10 +24,8 @@ const handleBooking = () => {
             navigate('/login');
             return;
         }
-        if (!checkIn || !checkOut) return alert("Please select dates.");
-        
-        // 🔥 NEW: Navigate to checkout and pass the data!
-        onClose(); // Close the modal
+        if (!checkIn || !checkOut) return alert("Please select dates.");   
+        onClose();
         navigate('/checkout', { 
             state: { 
                 type: 'hotel', 

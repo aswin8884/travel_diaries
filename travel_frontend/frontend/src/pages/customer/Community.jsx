@@ -42,7 +42,7 @@ const Community = () => {
             await axios.post('http://localhost:8000/api/community/', formData, {
                 headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
             });
-            fetchPosts(); // Reload feed from DB!
+            fetchPosts();
         } catch (error) { alert("Failed to create post."); }
     };
 
@@ -51,7 +51,7 @@ const Community = () => {
         try {
             const token = localStorage.getItem('access_token');
             await axios.post(`http://localhost:8000/api/community/${postId}/toggle_like/`, {}, { headers: { Authorization: `Bearer ${token}` } });
-            fetchPosts(); // Refresh likes
+            fetchPosts();
         } catch (error) { console.error(error); }
     };
 
@@ -59,7 +59,7 @@ const Community = () => {
         try {
             const token = localStorage.getItem('access_token');
             await axios.post(`http://localhost:8000/api/community/${postId}/add_comment/`, { text }, { headers: { Authorization: `Bearer ${token}` } });
-            fetchPosts(); // Refresh comments
+            fetchPosts();
         } catch (error) { console.error(error); }
     };
 

@@ -8,7 +8,6 @@ const Checkout = () => {
     const navigate = useNavigate();
     const bookingData = location.state;
 
-    // Contact Details State
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
 
@@ -27,11 +26,9 @@ const Checkout = () => {
         e.preventDefault();
         setIsProcessing(true);
 
-        // Simulate payment delay
         setTimeout(() => {
-            // 1. Save the booking locally so "My Trips" can see it!
             const newBooking = {
-                id: Date.now(), // Unique ID
+                id: Date.now(),
                 type,
                 item,
                 total,
@@ -43,12 +40,8 @@ const Checkout = () => {
             
             const existingBookings = JSON.parse(localStorage.getItem('user_bookings') || '[]');
             localStorage.setItem('user_bookings', JSON.stringify([newBooking, ...existingBookings]));
-
-            // 2. Show Success Screen
             setIsProcessing(false);
             setIsSuccess(true);
-            
-            // 3. Redirect to "My Trips" instead of Home so they can see their booking!
             setTimeout(() => { navigate('/my-trips'); }, 3000);
 
         }, 2000);
@@ -75,13 +68,10 @@ const Checkout = () => {
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold mb-8 transition-colors"><ArrowLeft size={18}/> Back</button>
 
                 <div className="flex flex-col lg:flex-row gap-12">
-                    {/* LEFT COLUMN: FORM */}
                     <div className="lg:w-3/5">
                         <h2 className="text-3xl font-black text-gray-900 mb-8">Secure Checkout</h2>
                         
                         <form onSubmit={handlePayment} className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-xl border border-gray-100">
-                            
-                            {/* 🔥 NEW: Contact Information */}
                             <h3 className="text-lg font-black text-gray-900 mb-4 border-b border-gray-100 pb-2">1. Contact Information</h3>
                             <div className="space-y-6 mb-10">
                                 <div>
@@ -128,8 +118,6 @@ const Checkout = () => {
                             </button>
                         </form>
                     </div>
-
-                    {/* RIGHT COLUMN: SUMMARY (Remains exactly the same) */}
                     <div className="lg:w-2/5">
                         <div className="bg-gray-900 rounded-[2.5rem] p-8 md:p-10 text-white shadow-2xl sticky top-32">
                             <h3 className="text-xl font-bold mb-6 text-gray-400 uppercase tracking-widest">Order Summary</h3>

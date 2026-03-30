@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { UploadCloud, MapPin, AlignLeft, Globe, Map, Type, Images, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom'; // ADD THIS!
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const AddDestination = () => {
@@ -87,7 +87,6 @@ const AddDestination = () => {
             <div className="absolute top-0 -left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 -z-10"></div>
                 <div className="bg-white/60 backdrop-blur-xl border border-white/50 p-8 md:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                 <div className="mb-8 border-b border-gray-100 pb-6">
-                    {/* NEW BACK BUTTON */}
                     <Link to="/admin" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors mb-4 bg-white/50 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-blue-200">
                         <ArrowLeft size={16} /> Back to Dashboard
                     </Link>
@@ -149,7 +148,7 @@ const AddDestination = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                        {/* Hero Image Upload */}
+                        {/* Image Upload */}
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><UploadCloud size={16}/> Main Hero Image</label>
                             <div className="border-2 border-dashed border-gray-300 rounded-3xl bg-white/50 p-4 text-center relative overflow-hidden h-40 flex flex-col justify-center items-center group">

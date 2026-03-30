@@ -11,7 +11,6 @@ const DestinationEdit = ({ dest, onCancel, onSuccess }) => {
         longitude: dest.longitude || ''
     });
     
-    // NEW: State for replacing images
     const [newImage, setNewImage] = useState(null);
     const [newGallery, setNewGallery] = useState([]);
     
@@ -21,7 +20,6 @@ const DestinationEdit = ({ dest, onCancel, onSuccess }) => {
         e.preventDefault();
         setIsSaving(true);
         
-        // NEW: We must use FormData to send files along with text!
         const formData = new FormData();
         formData.append('name', editForm.name);
         formData.append('short_description', editForm.short_description);
@@ -29,10 +27,8 @@ const DestinationEdit = ({ dest, onCancel, onSuccess }) => {
         formData.append('latitude', editForm.latitude);
         formData.append('longitude', editForm.longitude);
         
-        // If the user selected a new main image, attach it
         if (newImage) formData.append('image', newImage);
-        
-        // If the user selected new gallery images, attach them all under 'gallery'
+    
         newGallery.forEach(file => {
             formData.append('gallery', file);
         });
@@ -42,7 +38,7 @@ const DestinationEdit = ({ dest, onCancel, onSuccess }) => {
             const res = await axios.patch(`http://localhost:8000/api/destinations/${dest.id}/`, formData, { 
                 headers: { 
                     'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data' // Required for files!
+                    'Content-Type': 'multipart/form-data'
                 } 
             });
             onSuccess(res.data); 
@@ -86,8 +82,6 @@ const DestinationEdit = ({ dest, onCancel, onSuccess }) => {
                             <input type="number" step="any" required value={editForm.longitude} onChange={(e) => setEditForm({...editForm, longitude: e.target.value})} className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all font-medium text-lg" />
                         </div>
                     </div>
-
-                    {/* 🔥 NEW: IMAGE REPLACEMENT FIELDS 🔥 */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                         <div className="p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
                             <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><UploadCloud size={16} className="text-blue-500"/> Replace Main Image</label>

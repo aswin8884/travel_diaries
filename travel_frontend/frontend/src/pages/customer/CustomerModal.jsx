@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { X, MapPin, AlignLeft, Building, Utensils } from 'lucide-react';
 import axios from 'axios';
 
-// 🔥 Import our brand new sub-components
 import OverviewTab from './tabs/OverviewTab';
 import StaysTab from './tabs/StaysTab';
 import DiningTab from './tabs/DiningTab';
@@ -26,8 +25,6 @@ const CustomerModal = ({ dest, isActive, onClose, getImageUrl }) => {
         };
         fetchBookings();
     }, [dest]);
-
-    // Reset to overview when closing
     const handleClose = () => {
         setActiveTab('overview');
         onClose();

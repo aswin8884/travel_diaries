@@ -7,11 +7,10 @@ const HotelsTab = ({ destinations }) => {
     const [editingHotel, setEditingHotel] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
     
-    // Edit Form State
     const [editForm, setEditForm] = useState({});
     const [newImage, setNewImage] = useState(null);
     const [preview, setPreview] = useState(null);
-    const [newGallery, setNewGallery] = useState([]); // 🔥 Added Gallery State
+    const [newGallery, setNewGallery] = useState([]);
 
     useEffect(() => {
         const fetchHotels = async () => {
@@ -51,7 +50,7 @@ const HotelsTab = ({ destinations }) => {
         });
         setNewImage(null);
         setPreview(null);
-        setNewGallery([]); // Reset gallery
+        setNewGallery([]);
     };
 
     const handleUpdate = async (e) => {
@@ -67,7 +66,6 @@ const HotelsTab = ({ destinations }) => {
         
         if (newImage) formData.append('image', newImage);
         
-        // Append new gallery images if selected
         newGallery.forEach(file => {
             formData.append('gallery', file);
         });
@@ -87,7 +85,6 @@ const HotelsTab = ({ destinations }) => {
 
     return (
         <div className="animate-in fade-in duration-500">
-            {/* GRID VIEW */}
             <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6">
                 {hotels.map(hotel => (
                     <div key={hotel.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all group relative hover:-translate-y-1">
@@ -112,7 +109,6 @@ const HotelsTab = ({ destinations }) => {
                 ))}
             </div>
 
-            {/* 🔥 BIGGER, PREMIUM EDIT MODAL 🔥 */}
             {editingHotel && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-6 animate-in fade-in" onClick={() => setEditingHotel(null)}>
                     
@@ -147,13 +143,11 @@ const HotelsTab = ({ destinations }) => {
                                 </div>
                             </div>
 
-                            {/* Increased textarea size to 6 rows */}
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-2">Description & Amenities</label>
                                 <textarea rows="6" required value={editForm.description} onChange={e => setEditForm({...editForm, description: e.target.value})} className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all font-medium text-lg resize-none"></textarea>
                             </div>
 
-                            {/* Image Replacement Fields */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                                 <div className="p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
                                     <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><UploadCloud size={16} className="text-blue-500"/> Replace Main Image</label>

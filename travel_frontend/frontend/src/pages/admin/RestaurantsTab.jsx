@@ -85,7 +85,6 @@ const RestaurantsTab = ({ destinations }) => {
 
     return (
         <div className="animate-in fade-in duration-500">
-            {/* GRID VIEW */}
             <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6">
                 {restaurants.map(rest => (
                     <div key={rest.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all group relative hover:-translate-y-1">
@@ -109,8 +108,6 @@ const RestaurantsTab = ({ destinations }) => {
                     </div>
                 ))}
             </div>
-
-            {/* 🔥 BIGGER, PREMIUM EDIT MODAL 🔥 */}
             {editingRest && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-6 animate-in fade-in" onClick={() => setEditingRest(null)}>
                     
@@ -149,7 +146,6 @@ const RestaurantsTab = ({ destinations }) => {
                                 <textarea rows="6" required value={editForm.description} onChange={e => setEditForm({...editForm, description: e.target.value})} className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all font-medium text-lg resize-none"></textarea>
                             </div>
 
-                            {/* Image Replacement Fields */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                                 <div className="p-5 bg-orange-50/50 rounded-2xl border border-orange-100">
                                     <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><UploadCloud size={16} className="text-orange-500"/> Replace Main Image</label>

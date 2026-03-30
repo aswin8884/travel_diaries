@@ -2,18 +2,15 @@ import { MapPin, AlignLeft } from 'lucide-react';
 
 const DestinationView = ({ dest, getImageUrl }) => {
     return (
-        <div className="pb-40"> {/* Padding for the Floating Dock */}
+        <div className="pb-40">
             
-            {/* Massive Edge-to-Edge Hero Image */}
             <div className="w-full h-[45vh] md:h-[60vh] relative group overflow-hidden">
                 <img src={getImageUrl(dest.image)} alt={dest.name} className="absolute inset-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
             </div>
 
-            {/* --- Text Content Area --- */}
             <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10 pt-10">
                 
-                {/* Gallery Grid (Placed right below the hero image) */}
                 {dest.gallery && dest.gallery.length > 0 && (
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-10">
                         {dest.gallery.map(img => (
@@ -24,7 +21,6 @@ const DestinationView = ({ dest, getImageUrl }) => {
                     </div>
                 )}
 
-                {/* Title Header (Below Visuals) */}
                 <div className="mb-12">
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-100 text-blue-700 rounded-full text-xs font-black uppercase tracking-widest mb-4 shadow-sm">
                         <MapPin size={15} /> Destination
@@ -33,7 +29,6 @@ const DestinationView = ({ dest, getImageUrl }) => {
                     <p className="text-lg md:text-xl font-medium text-gray-600 leading-tight max-w-4xl">{dest.short_description}</p>
                 </div>
                 
-                {/* Editorial Typography */}
                 <div className="max-w-5xl">
                     <h4 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-3">
                         <AlignLeft size={18} className="text-blue-500"/> The Details

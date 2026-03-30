@@ -94,8 +94,6 @@ const MyAccount = () => {
             </div>
         );
     }
-
-    // Dynamic Display Logic (Falls back to email if name is empty)
     const displayLetter = user.first_name ? user.first_name.charAt(0).toUpperCase() : (user.email ? user.email.charAt(0).toUpperCase() : '?');
     const displayName = (user.first_name || user.last_name) ? `${user.first_name} ${user.last_name}` : (user.email || 'Anonymous Traveler');
 
@@ -116,8 +114,6 @@ const MyAccount = () => {
                 )}
 
                 <div className="flex flex-col md:flex-row gap-8">
-                    
-                    {/* LEFT SIDEBAR: PROFILE CARD */}
                     <div className="md:w-1/3 space-y-6">
                         <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 text-center relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-blue-600 to-blue-400"></div>
@@ -147,8 +143,6 @@ const MyAccount = () => {
                             </button>
                         </div>
                     </div>
-
-                    {/* RIGHT CONTENT: SETTINGS FORM */}
                     <div className="md:w-2/3">
                         <form onSubmit={handleSave} className="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-sm border border-gray-100 animate-in fade-in duration-500">
                             <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2 border-b border-gray-100 pb-2">
@@ -158,7 +152,6 @@ const MyAccount = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">First Name</label>
-                                    {/* 🔥 Removed fake placeholders! */}
                                     <input type="text" value={user.first_name} onChange={(e) => setUser({...user, first_name: e.target.value})} placeholder="Add your first name" className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all font-medium text-lg" />
                                 </div>
                                 <div>

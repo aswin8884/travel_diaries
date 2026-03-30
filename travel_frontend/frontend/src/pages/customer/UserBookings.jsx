@@ -7,23 +7,16 @@ const UserBookings = () => {
     const [cancelMessage, setCancelMessage] = useState('');
 
     useEffect(() => {
-        // Load bookings from local storage
         const savedBookings = JSON.parse(localStorage.getItem('user_bookings') || '[]');
         setBookings(savedBookings);
     }, []);
 
     const handleCancel = (id) => {
         if (!window.confirm("Are you sure you want to cancel this booking?")) return;
-
-        // Filter out the cancelled booking
         const updatedBookings = bookings.filter(b => b.id !== id);
         setBookings(updatedBookings);
         localStorage.setItem('user_bookings', JSON.stringify(updatedBookings));
-
-        // Show refund message
         setCancelMessage("Booking cancelled successfully. Refund will be credited within 2 working days.");
-        
-        // Hide message after 5 seconds
         setTimeout(() => setCancelMessage(''), 5000);
     };
 
@@ -38,8 +31,6 @@ const UserBookings = () => {
                         <p className="text-gray-500 font-medium mt-1">Manage your upcoming stays and dining reservations.</p>
                     </div>
                 </div>
-
-                {/* 🔥 Refund Alert Message 🔥 */}
                 {cancelMessage && (
                     <div className="mb-8 p-4 bg-green-50 border border-green-200 text-green-700 rounded-2xl flex items-center gap-3 animate-in slide-in-from-top-4 fade-in">
                         <AlertCircle size={20} />

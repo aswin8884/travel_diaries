@@ -18,7 +18,6 @@ const AddRestaurant = () => {
     const [image, setImage] = useState(null); // Main Cover Image
     const [preview, setPreview] = useState(null);
     
-    // 🔥 NEW: Gallery (Multi-Image) State
     const [gallery, setGallery] = useState([]);
     
     const [isSaving, setIsSaving] = useState(false);
@@ -59,7 +58,6 @@ const AddRestaurant = () => {
         formData.append('rating', rating);
         if (image) formData.append('image', image);
 
-        // 🔥 NEW: Append multiple gallery images under the key 'gallery'
         gallery.forEach(file => {
             formData.append('gallery', file);
         });
@@ -125,7 +123,6 @@ const AddRestaurant = () => {
                             </div>
 
                             <div>
-                                {/* 🔥 INDIAN RUPEE FORMATTING 🔥 */}
                                 <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><span className="text-xl font-black text-orange-500">₹</span> Average Cost (₹)</label>
                                 <input type="number" step="1" required value={price} onChange={(e) => setPrice(e.target.value)} className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all font-medium text-lg" placeholder="1500" />
                             </div>
@@ -142,7 +139,6 @@ const AddRestaurant = () => {
                                 {preview && <img src={preview} alt="Preview" className="mt-3 h-24 rounded-lg object-cover shadow-sm" />}
                             </div>
 
-                            {/* 🔥 NEW: Gallery Upload (allowing 'multiple') 🔥 */}
                             <div className="p-5 bg-orange-50/50 rounded-2xl border border-orange-100">
                                 <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><Images size={16} className="text-orange-500"/> Dining Area & Menu Gallery (Multi-upload)</label>
                                 <input type="file" multiple onChange={handleGalleryChange} accept="image/*" className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-white file:text-orange-700 hover:file:bg-orange-100 cursor-pointer w-full border border-orange-100 shadow-sm" />

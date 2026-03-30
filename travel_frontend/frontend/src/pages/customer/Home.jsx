@@ -45,8 +45,6 @@ const Home = () => {
 
     return (
         <div className="min-h-screen bg-white font-sans">
-            
-            {/* 1. HERO SECTION (Cinematic Upgrade) */}
             <div className="relative h-[85vh] flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img 
@@ -78,8 +76,6 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-
-            {/* 2. DESTINATION GRID */}
             <div className="max-w-7xl mx-auto px-6 py-24">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
                     <div className="max-w-xl">
@@ -115,13 +111,9 @@ const Home = () => {
                     ))}
                 </div>
             </div>
-
-            {/* 3. FEEDBACK BANNER (Integrated Bridge) */}
             <div className="pb-24">
                 <FeedbackBanner />
             </div>
-
-            {/* 4. COMMUNITY TEASER SECTION */}
             <div className="bg-gray-50 py-32 rounded-t-[5rem] border-t border-gray-100">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">

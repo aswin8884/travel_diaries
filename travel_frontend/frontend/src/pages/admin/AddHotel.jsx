@@ -18,7 +18,6 @@ const AddHotel = () => {
     const [image, setImage] = useState(null); // Main Image
     const [preview, setPreview] = useState(null);
     
-    // 🔥 NEW: Gallery (Multi-Image) State
     const [gallery, setGallery] = useState([]);
     
     const [isSaving, setIsSaving] = useState(false);
@@ -38,7 +37,7 @@ const AddHotel = () => {
         if (file) { setImage(file); setPreview(URL.createObjectURL(file)); }
     };
 
-    // 🔥 NEW: Handle multi-file selection
+    // multi-file selection
     const handleGalleryChange = (e) => {
         setGallery(Array.from(e.target.files));
     };
@@ -55,7 +54,6 @@ const AddHotel = () => {
         formData.append('rating', rating);
         if (image) formData.append('image', image);
 
-        // 🔥 NEW: Append multiple gallery images under the key 'gallery'
         gallery.forEach(file => {
             formData.append('gallery', file);
         });
@@ -134,7 +132,6 @@ const AddHotel = () => {
                                 {preview && <img src={preview} alt="Preview" className="mt-3 h-24 rounded-lg object-cover shadow-sm" />}
                             </div>
 
-                            {/* 🔥 NEW: Gallery Upload (allowing 'multiple') */}
                             <div className="p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
                                 <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><Images size={16} className="text-blue-500"/> Room & Amenity Gallery (Multi-upload)</label>
                                 <input type="file" multiple onChange={handleGalleryChange} accept="image/*" className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-white file:text-blue-700 hover:file:bg-blue-100 cursor-pointer w-full border border-blue-100 shadow-sm" />

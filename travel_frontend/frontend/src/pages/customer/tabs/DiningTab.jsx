@@ -13,8 +13,6 @@ const handleBooking = () => {
             navigate('/login');
             return;
         }
-        
-        // 🔥 NEW: Navigate to checkout and pass the data!
         onClose();
         navigate('/checkout', { 
             state: { 
