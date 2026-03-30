@@ -52,7 +52,7 @@ travel_diaries/
 ### 🔹 Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/travel_diaries.git
+git clone https://github.com/aswin8884/travel_diaries.git
 cd travel_diaries
 ```
 
