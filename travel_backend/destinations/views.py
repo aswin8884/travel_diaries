@@ -7,16 +7,15 @@ from .models import (
     Destination, DestinationImage,
     Hotel, HotelImage,
     Restaurant, RestaurantImage,
-    CommunityPost, PostImage, Comment, Like,AppFeedback
+    CommunityPost, PostImage, Comment, Like, AppFeedback
 )
 
 from .serializers import (
     DestinationSerializer,
     HotelSerializer,
     RestaurantSerializer,
-    CommunityPostSerializer,AppFeedbackSerializer
+    CommunityPostSerializer, AppFeedbackSerializer
 )
-
 
 # -------------------- DESTINATION --------------------
 class DestinationViewSet(viewsets.ModelViewSet):
@@ -29,7 +28,8 @@ class DestinationViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         destination = serializer.save()
 
-        gallery_images = request.FILES.getlist('gallery')
+        # 🔥 Changed to 'gallery_images' to match React frontend
+        gallery_images = request.FILES.getlist('gallery_images')
         for image in gallery_images:
             DestinationImage.objects.create(destination=destination, image=image)
 
@@ -40,9 +40,11 @@ class DestinationViewSet(viewsets.ModelViewSet):
         response = super().update(request, *args, **kwargs)
         destination = self.get_object()
 
-        gallery_images = request.FILES.getlist('gallery')
+        # 🔥 Changed to 'gallery_images' to match React frontend
+        gallery_images = request.FILES.getlist('gallery_images')
         if gallery_images:
-            destination.gallery.all().delete()
+            # 🔥 Changed to .images to match models.py related_name
+            destination.images.all().delete()
 
             for image in gallery_images:
                 DestinationImage.objects.create(destination=destination, image=image)
@@ -64,7 +66,8 @@ class HotelViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         hotel = serializer.save()
 
-        gallery_images = request.FILES.getlist('gallery')
+        # 🔥 Changed to 'gallery_images'
+        gallery_images = request.FILES.getlist('gallery_images')
         for image in gallery_images:
             HotelImage.objects.create(hotel=hotel, image=image)
 
@@ -75,9 +78,11 @@ class HotelViewSet(viewsets.ModelViewSet):
         response = super().update(request, *args, **kwargs)
         hotel = self.get_object()
 
-        gallery_images = request.FILES.getlist('gallery')
+        # 🔥 Changed to 'gallery_images'
+        gallery_images = request.FILES.getlist('gallery_images')
         if gallery_images:
-            hotel.gallery.all().delete()
+            # 🔥 Changed to .images
+            hotel.images.all().delete()
 
             for image in gallery_images:
                 HotelImage.objects.create(hotel=hotel, image=image)
@@ -99,7 +104,8 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         restaurant = serializer.save()
 
-        gallery_images = request.FILES.getlist('gallery')
+        # 🔥 Changed to 'gallery_images'
+        gallery_images = request.FILES.getlist('gallery_images')
         for image in gallery_images:
             RestaurantImage.objects.create(restaurant=restaurant, image=image)
 
@@ -110,9 +116,11 @@ class RestaurantViewSet(viewsets.ModelViewSet):
         response = super().update(request, *args, **kwargs)
         restaurant = self.get_object()
 
-        gallery_images = request.FILES.getlist('gallery')
+        # 🔥 Changed to 'gallery_images'
+        gallery_images = request.FILES.getlist('gallery_images')
         if gallery_images:
-            restaurant.gallery.all().delete()
+            # 🔥 Changed to .images
+            restaurant.images.all().delete()
 
             for image in gallery_images:
                 RestaurantImage.objects.create(restaurant=restaurant, image=image)
@@ -128,6 +136,11 @@ class CommunityPostViewSet(viewsets.ModelViewSet):
     queryset = CommunityPost.objects.all().order_by('-created_at')
     serializer_class = CommunityPostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
     def create(self, request, *args, **kwargs):
         post = CommunityPost.objects.create(
@@ -157,7 +170,7 @@ class CommunityPostViewSet(viewsets.ModelViewSet):
         text = request.data.get('text')
 
         if text:
-            Comment.objects.create(post=post, author=request.user, text=text)
+            Comment.objects.create(post=post, user=request.user, text=text)
 
         return Response(self.get_serializer(post).data)
     
@@ -171,10 +184,10 @@ class AppFeedbackViewSet(viewsets.ModelViewSet):
         text = request.data.get('text', '')
         if len(text.split()) > 50:
             return Response({"error": "Feedback must be 50 words or less."}, status=status.HTTP_400_BAD_REQUEST)
-            
+
         feedback = AppFeedback.objects.create(
             user=request.user,
             rating=request.data.get('rating', 5),
-            text=text
+            comment=text
         )
         return Response(self.get_serializer(feedback).data, status=status.HTTP_201_CREATED)

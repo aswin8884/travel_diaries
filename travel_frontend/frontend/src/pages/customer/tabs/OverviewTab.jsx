@@ -7,7 +7,7 @@ const OverviewTab = ({ dest, getImageUrl }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 animate-in fade-in">
             <div>
                 <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-6 flex items-center gap-3"><AlignLeft size={18} className="text-blue-500"/> The Experience</h4>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line text-lg font-medium mb-10">{dest.description}</p>
+                <p className="text-gray-700 leading-relaxed whitespace-pre-line text-lg font-medium mb-10">{dest.long_description}</p>
                 {dest.gallery && dest.gallery.length > 0 && (
                     <div>
                         <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-6">Gallery</h4>

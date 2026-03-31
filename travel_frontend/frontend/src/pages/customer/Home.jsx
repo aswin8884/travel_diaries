@@ -131,18 +131,6 @@ const Home = () => {
                                 Explore Community <ArrowRight size={20} />
                             </Link>
                         </div>
-
-                        <div className="relative">
-                            <div className="bg-blue-600 rounded-[3rem] p-12 text-center shadow-2xl shadow-blue-600/30">
-                                <h3 className="text-4xl font-black text-white mb-4">Join the Club</h3>
-                                <p className="text-blue-100 text-lg font-medium mb-10">Create an account to leave reviews, post photos, and get exclusive travel deals.</p>
-                                <Link to="/register" className="block bg-white text-blue-600 py-6 rounded-2xl font-black text-xl hover:scale-105 transition-transform shadow-xl">
-                                    Sign Up Free
-                                </Link>
-                            </div>
-                            {/* Decorative element */}
-                            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-yellow-400 rounded-full -z-10 blur-2xl opacity-50"></div>
-                        </div>
                     </div>
                 </div>
             </div>

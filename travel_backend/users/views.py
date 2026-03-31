@@ -5,8 +5,18 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
-    IsAdminUser
+    BasePermission
 )
+
+
+class IsAdminRole(BasePermission):
+    """Allow access to users with role='admin' or is_staff=True."""
+    def has_permission(self, request, view):
+        return (
+            request.user and
+            request.user.is_authenticated and
+            (request.user.is_staff or getattr(request.user, 'role', '') == 'admin')
+        )
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -37,7 +47,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserListSerializer
-    permission_classes = [IsAdminUser]  # Only admins can access
+    permission_classes = [IsAdminRole]  # Only admins can access
 
 
 @api_view(['GET', 'PATCH'])

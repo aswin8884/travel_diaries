@@ -3,8 +3,8 @@ import { X, MapPin, AlignLeft, Building, Utensils } from 'lucide-react';
 import axios from 'axios';
 
 import OverviewTab from './tabs/OverviewTab';
-import StaysTab from './tabs/StaysTab';
-import DiningTab from './tabs/DiningTab';
+import StaysTab from "./tabs/StaysTab";
+import DiningTab from "./tabs/DiningTab";
 
 const CustomerModal = ({ dest, isActive, onClose, getImageUrl }) => {
     const [activeTab, setActiveTab] = useState('overview');
@@ -19,12 +19,14 @@ const CustomerModal = ({ dest, isActive, onClose, getImageUrl }) => {
                     axios.get('http://localhost:8000/api/hotels/'),
                     axios.get('http://localhost:8000/api/restaurants/')
                 ]);
+                // Saving the filtered data to local state
                 setHotels((hotelRes.data.results || hotelRes.data).filter(h => h.destination === dest.id));
                 setRestaurants((restRes.data.results || restRes.data).filter(r => r.destination === dest.id));
             } catch (error) { console.error(error); }
         };
         fetchBookings();
     }, [dest]);
+
     const handleClose = () => {
         setActiveTab('overview');
         onClose();
@@ -62,9 +64,10 @@ const CustomerModal = ({ dest, isActive, onClose, getImageUrl }) => {
                             <button onClick={() => setActiveTab('dining')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'dining' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}><Utensils size={18}/> Dining ({restaurants.length})</button>
                         </div>
 
+                        {/* 🔥 THE FIX IS RIGHT HERE: Passing the local state variables! */}
                         {activeTab === 'overview' && <OverviewTab dest={dest} getImageUrl={getImageUrl} />}
-                        {activeTab === 'stays' && <StaysTab hotels={hotels} getImageUrl={getImageUrl} onClose={handleClose} />}
-                        {activeTab === 'dining' && <DiningTab restaurants={restaurants} getImageUrl={getImageUrl} onClose={handleClose} />}
+                        {activeTab === 'stays' && <StaysTab hotels={hotels} />}
+                        {activeTab === 'dining' && <DiningTab restaurants={restaurants} />}
 
                     </div>
                 </div>

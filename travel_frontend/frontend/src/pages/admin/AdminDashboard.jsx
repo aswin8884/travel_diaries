@@ -3,21 +3,24 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Plus, LayoutDashboard, CalendarCheck, Users, MapPin, LogOut, Building, Utensils } from 'lucide-react';
 import axios from 'axios';
 
-// Import our modular components
-import OverviewTab from "./OverviewTab.jsx";
-import DestinationsTab from "./DestinationsTab.jsx";
-import UsersTab from "./UsersTab.jsx";
-import HotelsTab from "./HotelsTab.jsx";
-import RestaurantsTab from "./RestaurantsTab.jsx";
+// Modular Components
+import OverviewTab from "./views/OverviewTab.jsx";
+import DestinationsTab from "./destinations/DestinationsTab.jsx";
+import UsersTab from "./views/UsersTab.jsx";
+import HotelsTab from "./hotels/HotelsTab.jsx";
+import RestaurantsTab from "./restaurants/RestaurantsTab.jsx";
+import BookingsTab from "./bookings/BookingsTab.jsx";
 
 const AdminDashboard = () => {
     const navigate = useNavigate(); 
     
+    // Core Dashboard State
     const [activeTab, setActiveTab] = useState('destinations');
     const [destinations, setDestinations] = useState([]);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Modal State
     const [selectedDest, setSelectedDest] = useState(null); 
     const [isModalActive, setIsModalActive] = useState(false); 
 
@@ -37,6 +40,7 @@ const AdminDashboard = () => {
         navigate('/'); 
     };
 
+    // Fetch Initial Global Data
     useEffect(() => {
         const fetchDashboardData = async () => {
             const token = localStorage.getItem('access_token');
@@ -44,14 +48,14 @@ const AdminDashboard = () => {
             try {
                 const destRes = await axios.get('http://localhost:8000/api/destinations/', config);
                 setDestinations(destRes.data.results || destRes.data);
-            } catch (e) { console.error(e); }
-
-            try {
+                
                 const usersRes = await axios.get('http://localhost:8000/api/users/all/', config);
                 setUsers(usersRes.data.results || usersRes.data);
-            } catch (e) { console.error(e); } 
-            
-            setLoading(false);
+            } catch (e) { 
+                console.error("Dashboard data fetch error:", e); 
+            } finally {
+                setLoading(false);
+            }
         };
         fetchDashboardData();
     }, []);
@@ -65,7 +69,7 @@ const AdminDashboard = () => {
             <nav className="bg-white/80 backdrop-blur-xl border-b border-gray-200 sticky top-0 z-[80] px-6 py-4 flex justify-between items-center shadow-sm">
                 <div className="flex items-center gap-6">
                     <Link to="/" className="text-gray-950 font-black text-xl tracking-tighter flex items-center gap-2">
-                        <MapPin className="text-blue-600" fill="currentColor" size={22}/> TravelApp.
+                        <MapPin className="text-blue-600" fill="currentColor" size={22}/> Travel Daires.
                     </Link>
                     <div className="hidden md:block w-px h-6 bg-gray-200"></div>
                     <div className="hidden md:flex items-center gap-2">
@@ -88,6 +92,7 @@ const AdminDashboard = () => {
             <div className="max-w-7xl mx-auto space-y-8 relative px-6 mt-10">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-blue-100/40 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 
+                {/* COMMAND CENTER HEADER */}
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-white/60 backdrop-blur-xl p-8 rounded-3xl border border-white shadow-sm">
                     <div>
                         <h1 className="text-3xl font-black text-gray-900 tracking-tight">Command Center</h1>
@@ -107,45 +112,36 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
-                {/* Tab Navigation */}
-  <div className="flex overflow-x-auto hide-scrollbar gap-2 bg-white/80 backdrop-blur-md p-1.5 rounded-2xl border border-gray-200 shadow-sm inline-flex w-full md:w-auto">
-    <button onClick={() => setActiveTab('overview')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${activeTab === 'overview' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800 hover:bg-white/50'}`}><LayoutDashboard size={18} /> Overview</button>
-    <button onClick={() => setActiveTab('destinations')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${activeTab === 'destinations' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800 hover:bg-white/50'}`}><MapPin size={18} /> Destinations</button>
-    
-    {/* NEW TABS HERE! */}
-    <button onClick={() => setActiveTab('hotels')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${activeTab === 'hotels' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800 hover:bg-white/50'}`}><Building size={18} /> Hotels</button>
-    <button onClick={() => setActiveTab('restaurants')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${activeTab === 'restaurants' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800 hover:bg-white/50'}`}><Utensils size={18} /> Restaurants</button>
-    
-    <button onClick={() => setActiveTab('users')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${activeTab === 'users' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800 hover:bg-white/50'}`}><Users size={18} /> Users</button>
-    <button onClick={() => setActiveTab('bookings')} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${activeTab === 'bookings' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800 hover:bg-white/50'}`}><CalendarCheck size={18} /> Bookings</button>
-</div>
+                {/* TAB NAVIGATION */}
+                <div className="flex overflow-x-auto hide-scrollbar gap-2 bg-white/80 backdrop-blur-md p-1.5 rounded-2xl border border-gray-200 shadow-sm inline-flex w-full md:w-auto">
+                    {[
+                        { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
+                        { id: 'destinations', icon: MapPin, label: 'Destinations' },
+                        { id: 'hotels', icon: Building, label: 'Hotels' },
+                        { id: 'restaurants', icon: Utensils, label: 'Restaurants' },
+                        { id: 'users', icon: Users, label: 'Users' },
+                        { id: 'bookings', icon: CalendarCheck, label: 'Bookings' }
+                    ].map(tab => (
+                        <button 
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)} 
+                            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800 hover:bg-white/50'}`}
+                        >
+                            <tab.icon size={18} /> {tab.label}
+                        </button>
+                    ))}
+                </div>
 
-                {/* TAB CONTENT */}
-                {activeTab === 'overview' && <OverviewTab destinationsCount={destinations.length} usersCount={users.length} />}
-                
-                {activeTab === 'destinations' && (
-                    <DestinationsTab 
-                        destinations={destinations} 
-                        setDestinations={setDestinations} 
-                        selectedDest={selectedDest} 
-                        openModal={openModal} 
-                        closeModal={closeModal} 
-                        isModalActive={isModalActive} 
-                    />
-                )}
-                
-                {activeTab === 'users' && <UsersTab users={users} />}
+                {/* MODULAR TAB RENDERING */}
+                <div className="tab-content-container">
+                    {activeTab === 'overview' && <OverviewTab destinationsCount={destinations.length} usersCount={users.length} />}
+                    {activeTab === 'destinations' && <DestinationsTab destinations={destinations} setDestinations={setDestinations} selectedDest={selectedDest} openModal={openModal} closeModal={closeModal} isModalActive={isModalActive} />}
+                    {activeTab === 'users' && <UsersTab users={users} />}
+                    {activeTab === 'hotels' && <HotelsTab destinations={destinations} />}
+                    {activeTab === 'restaurants' && <RestaurantsTab destinations={destinations} />}
+                    {activeTab === 'bookings' && <BookingsTab />}
+                </div>
 
-                {activeTab === 'hotels' && <HotelsTab destinations={destinations} />}
-{activeTab === 'restaurants' && <RestaurantsTab destinations={destinations} />}
-                
-                {activeTab === 'bookings' && (
-                    <div className="bg-white/80 backdrop-blur-xl border border-gray-100 rounded-3xl shadow-sm p-12 text-center animate-in fade-in duration-500">
-                        <CalendarCheck size={32} className="mx-auto text-gray-400 mb-4" />
-                        <h3 className="text-xl font-bold text-gray-900">Manage Bookings</h3>
-                        <p className="text-gray-500 mt-2">Booking API integration coming soon.</p>
-                    </div>
-                )}
             </div>
         </div>
     );
