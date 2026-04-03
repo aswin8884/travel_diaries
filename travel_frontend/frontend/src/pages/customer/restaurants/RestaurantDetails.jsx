@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, Utensils, Star, ArrowLeft, CheckCircle, ShieldCheck, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -226,7 +226,7 @@ const RestaurantDetails = () => {
                                     </div>
                                     <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
                                         <label className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase mb-2">Time</label>
-                                        <input type="time" value={time} onChange={(e)=>setTime(e.target.value)} className="w-full bg-transparent font-bold text-gray-900 dark:text-white outline-none cursor-pointer dark:[color-scheme:dark]" />
+                                        <input type="time" value={time} onChange={(e)=>setTime(e.target.value)} min={restaurant.opening_time?.slice(0,5)} max={restaurant.closing_time?.slice(0,5)} className="w-full bg-transparent font-bold text-gray-900 dark:text-white outline-none cursor-pointer dark:[color-scheme:dark]" />
                                     </div>
                                     <div className="p-5 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 flex justify-between items-center">
                                         <label className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase">Party Size</label>
