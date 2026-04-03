@@ -52,6 +52,20 @@ const RestaurantDetails = () => {
     const today = new Date().toISOString().split('T')[0];
     const hasMap = restaurant.latitude && restaurant.longitude;
 
+    // Generate 30-min slots between opening and closing time
+    const timeSlots = (() => {
+        const slots = [];
+        const [openH, openM] = (restaurant.opening_time || '00:00').split(':').map(Number);
+        const [closeH, closeM] = (restaurant.closing_time || '23:30').split(':').map(Number);
+        let h = openH, m = openM;
+        while (h < closeH || (h === closeH && m <= closeM)) {
+            slots.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
+            m += 30;
+            if (m >= 60) { m -= 60; h++; }
+        }
+        return slots;
+    })();
+
     const allImages = [restaurant.image, ...(restaurant.gallery_images?.map(g => g.image) || restaurant.images?.map(g => g.image) || [])];
     const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
     const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
@@ -226,7 +240,12 @@ const RestaurantDetails = () => {
                                     </div>
                                     <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
                                         <label className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase mb-2">Time</label>
-                                        <input type="time" value={time} onChange={(e)=>setTime(e.target.value)} min={restaurant.opening_time?.slice(0,5)} max={restaurant.closing_time?.slice(0,5)} className="w-full bg-transparent font-bold text-gray-900 dark:text-white outline-none cursor-pointer dark:[color-scheme:dark]" />
+                                        <select value={time} onChange={(e)=>setTime(e.target.value)} className="w-full bg-transparent font-bold text-gray-900 dark:text-white outline-none cursor-pointer">
+                                            <option value="">Select a time</option>
+                                            {timeSlots.map(slot => (
+                                                <option key={slot} value={slot}>{slot}</option>
+                                            ))}
+                                        </select>
                                     </div>
                                     <div className="p-5 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 flex justify-between items-center">
                                         <label className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase">Party Size</label>
