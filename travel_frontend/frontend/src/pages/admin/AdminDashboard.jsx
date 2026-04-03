@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, LayoutDashboard, CalendarCheck, Users, MapPin, LogOut, Building, Utensils } from 'lucide-react';
+import { Plus, LayoutDashboard, CalendarCheck, Users, MapPin, LogOut, Building, Utensils, Compass, Sun, Moon, ChevronRight } from 'lucide-react';
 import axios from 'axios';
+import { useTheme } from '../../context/ThemeContext.jsx';
 
-// Modular Components
 import OverviewTab from "./views/OverviewTab.jsx";
 import DestinationsTab from "./destinations/DestinationsTab.jsx";
 import UsersTab from "./views/UsersTab.jsx";
@@ -11,48 +11,48 @@ import HotelsTab from "./hotels/HotelsTab.jsx";
 import RestaurantsTab from "./restaurants/RestaurantsTab.jsx";
 import BookingsTab from "./bookings/BookingsTab.jsx";
 
+const TABS = [
+    { id: 'overview',      icon: LayoutDashboard, label: 'Overview' },
+    { id: 'destinations',  icon: MapPin,           label: 'Destinations' },
+    { id: 'hotels',        icon: Building,         label: 'Hotels' },
+    { id: 'restaurants',   icon: Utensils,         label: 'Restaurants' },
+    { id: 'users',         icon: Users,            label: 'Users' },
+    { id: 'bookings',      icon: CalendarCheck,    label: 'Bookings' },
+];
+
 const AdminDashboard = () => {
-    const navigate = useNavigate(); 
-    
-    // Core Dashboard State
-    const [activeTab, setActiveTab] = useState('destinations');
+    const navigate = useNavigate();
+    const { isDark, toggle } = useTheme();
+
+    const [activeTab, setActiveTab] = useState('overview');
     const [destinations, setDestinations] = useState([]);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedDest, setSelectedDest] = useState(null);
+    const [isModalActive, setIsModalActive] = useState(false);
 
-    // Modal State
-    const [selectedDest, setSelectedDest] = useState(null); 
-    const [isModalActive, setIsModalActive] = useState(false); 
-
-    const openModal = (dest) => {
-        setSelectedDest(dest);
-        setIsModalActive(true); 
-    };
-
-    const closeModal = () => {
-        setIsModalActive(false); 
-        setTimeout(() => { setSelectedDest(null); }, 300);
-    };
+    const openModal = (dest) => { setSelectedDest(dest); setIsModalActive(true); };
+    const closeModal = () => { setIsModalActive(false); setTimeout(() => setSelectedDest(null), 300); };
 
     const handleLogout = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
-        navigate('/'); 
+        navigate('/');
     };
 
-    // Fetch Initial Global Data
     useEffect(() => {
         const fetchDashboardData = async () => {
             const token = localStorage.getItem('access_token');
             const config = { headers: { Authorization: `Bearer ${token}` } };
             try {
-                const destRes = await axios.get('http://localhost:8000/api/destinations/', config);
+                const [destRes, usersRes] = await Promise.all([
+                    axios.get('http://localhost:8000/api/destinations/', config),
+                    axios.get('http://localhost:8000/api/users/all/', config),
+                ]);
                 setDestinations(destRes.data.results || destRes.data);
-                
-                const usersRes = await axios.get('http://localhost:8000/api/users/all/', config);
                 setUsers(usersRes.data.results || usersRes.data);
-            } catch (e) { 
-                console.error("Dashboard data fetch error:", e); 
+            } catch (e) {
+                console.error("Dashboard data fetch error:", e);
             } finally {
                 setLoading(false);
             }
@@ -60,80 +60,97 @@ const AdminDashboard = () => {
         fetchDashboardData();
     }, []);
 
-    if (loading) return <div className="flex justify-center items-center h-screen font-medium text-gray-500">Loading Dashboard...</div>;
+    if (loading) return (
+        <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-col items-center justify-center gap-4">
+            <div className="relative w-16 h-16">
+                <div className="absolute inset-0 border-4 border-blue-100 dark:border-blue-900 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <p className="text-gray-400 font-bold animate-pulse">Loading Dashboard...</p>
+        </div>
+    );
 
     return (
-        <div className="min-h-screen bg-gray-50/30 pb-20">
-            
-            {/* ADMIN NAVBAR */}
-            <nav className="bg-white/80 backdrop-blur-xl border-b border-gray-200 sticky top-0 z-[80] px-6 py-4 flex justify-between items-center shadow-sm">
-                <div className="flex items-center gap-6">
-                    <Link to="/" className="text-gray-950 font-black text-xl tracking-tighter flex items-center gap-2">
-                        <MapPin className="text-blue-600" fill="currentColor" size={22}/> Travel Daires.
-                    </Link>
-                    <div className="hidden md:block w-px h-6 bg-gray-200"></div>
-                    <div className="hidden md:flex items-center gap-2">
-                        <span className="bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Admin</span>
-                        <h2 className="text-gray-500 font-bold text-sm uppercase tracking-widest">Dashboard</h2>
-                    </div>
-                </div>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
 
-                <div className="flex items-center gap-4 md:gap-8">
-                    <div className="hidden md:flex items-center gap-2.5 bg-green-50 px-3.5 py-1.5 rounded-full border border-green-100">
-                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                        <span className="text-green-700 text-xs font-bold uppercase tracking-wide">System Online</span>
+            {/* ===== TOP NAVBAR ===== */}
+            <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-[80] px-6 py-4">
+                <div className="max-w-screen-2xl mx-auto flex justify-between items-center">
+                    <div className="flex items-center gap-4">
+                        <Link to="/" className="flex items-center gap-2.5">
+                            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                                <Compass className="text-white" size={17} strokeWidth={2.5}/>
+                            </div>
+                            <span className="font-black text-lg text-gray-900 dark:text-white tracking-tight">Travel<span className="text-blue-600">Dairies</span></span>
+                        </Link>
+                        <div className="hidden md:flex items-center gap-2 ml-4">
+                            <span className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg">Admin</span>
+                            <span className="text-gray-400 dark:text-gray-500 font-bold text-sm">Command Center</span>
+                        </div>
                     </div>
-                    <button onClick={handleLogout} className="flex items-center gap-2 text-gray-500 hover:text-red-600 font-bold transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50">
-                        <LogOut size={18} /> <span className="hidden sm:block">Logout</span>
-                    </button>
+
+                    <div className="flex items-center gap-3">
+                        <div className="hidden md:flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 px-3.5 py-1.5 rounded-full border border-emerald-100 dark:border-emerald-900">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <span className="text-emerald-700 dark:text-emerald-400 text-xs font-bold">System Online</span>
+                        </div>
+                        <button onClick={toggle} className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all hover:scale-110">
+                            {isDark ? <Sun size={17} className="text-yellow-400"/> : <Moon size={17} className="text-slate-600"/>}
+                        </button>
+                        <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 font-bold transition-colors hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl">
+                            <LogOut size={17}/> <span className="hidden sm:block text-sm">Logout</span>
+                        </button>
+                    </div>
                 </div>
             </nav>
 
-            <div className="max-w-7xl mx-auto space-y-8 relative px-6 mt-10">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-blue-100/40 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+            <div className="max-w-screen-2xl mx-auto px-6 py-8 space-y-6">
 
-                {/* COMMAND CENTER HEADER */}
-                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-white/60 backdrop-blur-xl p-8 rounded-3xl border border-white shadow-sm">
+                {/* ===== QUICK ACTION HEADER ===== */}
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-6 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-sm">
                     <div>
-                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Command Center</h1>
-                        <p className="text-gray-500 font-medium mt-1">Manage platform revenue, bookings, and global destinations.</p>
+                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Command Center</h1>
+                        <p className="text-gray-500 dark:text-gray-400 font-medium text-sm mt-0.5">Manage destinations, bookings, and platform analytics.</p>
                     </div>
-                    
                     <div className="flex flex-wrap items-center gap-3">
-                        <Link to="/admin/add-hotel" className="flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 border border-gray-200 px-5 py-3.5 rounded-2xl font-bold shadow-sm transition-all hover:-translate-y-0.5">
-                            <Building size={18} /> Add Hotel
+                        <Link to="/admin/add-hotel" className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all hover:-translate-y-0.5">
+                            <Building size={16}/> Add Hotel
                         </Link>
-                        <Link to="/admin/add-restaurant" className="flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 border border-gray-200 px-5 py-3.5 rounded-2xl font-bold shadow-sm transition-all hover:-translate-y-0.5">
-                            <Utensils size={18} /> Add Restaurant
+                        <Link to="/admin/add-restaurant" className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all hover:-translate-y-0.5">
+                            <Utensils size={16}/> Add Restaurant
                         </Link>
-                        <Link to="/admin/add-destination" className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3.5 rounded-2xl font-bold shadow-lg shadow-blue-600/20 transition-all hover:-translate-y-0.5">
-                            <Plus size={18} /> Add Destination
+                        <Link to="/admin/add-destination" className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-violet-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5 hover:shadow-blue-500/40">
+                            <Plus size={16}/> New Destination
                         </Link>
                     </div>
                 </div>
 
-                {/* TAB NAVIGATION */}
-                <div className="flex overflow-x-auto hide-scrollbar gap-2 bg-white/80 backdrop-blur-md p-1.5 rounded-2xl border border-gray-200 shadow-sm inline-flex w-full md:w-auto">
-                    {[
-                        { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
-                        { id: 'destinations', icon: MapPin, label: 'Destinations' },
-                        { id: 'hotels', icon: Building, label: 'Hotels' },
-                        { id: 'restaurants', icon: Utensils, label: 'Restaurants' },
-                        { id: 'users', icon: Users, label: 'Users' },
-                        { id: 'bookings', icon: CalendarCheck, label: 'Bookings' }
-                    ].map(tab => (
-                        <button 
+                {/* ===== TAB NAVIGATION ===== */}
+                <div className="flex overflow-x-auto hide-scrollbar gap-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-1.5 rounded-2xl shadow-sm w-full">
+                    {TABS.map(tab => (
+                        <button
                             key={tab.id}
-                            onClick={() => setActiveTab(tab.id)} 
-                            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-800 hover:bg-white/50'}`}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all whitespace-nowrap text-sm flex-1 justify-center
+                                ${activeTab === tab.id
+                                    ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-lg shadow-blue-500/20'
+                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
+                                }`}
                         >
-                            <tab.icon size={18} /> {tab.label}
+                            <tab.icon size={16}/> {tab.label}
                         </button>
                     ))}
                 </div>
 
-                {/* MODULAR TAB RENDERING */}
-                <div className="tab-content-container">
+                {/* ===== BREADCRUMB ===== */}
+                <div className="flex items-center gap-2 text-xs font-bold text-gray-400 dark:text-gray-600">
+                    <span>Admin</span>
+                    <ChevronRight size={12}/>
+                    <span className="text-gray-700 dark:text-gray-300">{TABS.find(t => t.id === activeTab)?.label}</span>
+                </div>
+
+                {/* ===== TAB CONTENT ===== */}
+                <div>
                     {activeTab === 'overview' && <OverviewTab destinationsCount={destinations.length} usersCount={users.length} />}
                     {activeTab === 'destinations' && <DestinationsTab destinations={destinations} setDestinations={setDestinations} selectedDest={selectedDest} openModal={openModal} closeModal={closeModal} isModalActive={isModalActive} />}
                     {activeTab === 'users' && <UsersTab users={users} />}

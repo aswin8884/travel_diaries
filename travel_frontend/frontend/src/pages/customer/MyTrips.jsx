@@ -17,12 +17,10 @@ const MyTrips = () => {
         try {
             const token = localStorage.getItem('access_token');
             const headers = { Authorization: `Bearer ${token}` };
-
             const [hotelRes, restaurantRes] = await Promise.all([
                 axios.get('http://localhost:8000/api/hotel-bookings/my-bookings/', { headers }),
                 axios.get('http://localhost:8000/api/restaurant-bookings/my-bookings/', { headers })
             ]);
-
             setHotelBookings(hotelRes.data);
             setRestaurantBookings(restaurantRes.data);
         } catch (error) {
@@ -36,9 +34,7 @@ const MyTrips = () => {
         if (!window.confirm("Are you sure you want to cancel this hotel booking?")) return;
         try {
             const token = localStorage.getItem('access_token');
-            await axios.patch(`http://localhost:8000/api/hotel-bookings/${bookingId}/`, {
-                status: 'Cancelled'
-            }, {
+            await axios.patch(`http://localhost:8000/api/hotel-bookings/${bookingId}/`, { status: 'Cancelled' }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setCancelMessage("Booking successfully cancelled. Your refund will credit within 2 working days.");
@@ -54,9 +50,7 @@ const MyTrips = () => {
         if (!window.confirm("Are you sure you want to cancel this reservation?")) return;
         try {
             const token = localStorage.getItem('access_token');
-            await axios.patch(`http://localhost:8000/api/restaurant-bookings/${bookingId}/`, {
-                status: 'Cancelled'
-            }, {
+            await axios.patch(`http://localhost:8000/api/restaurant-bookings/${bookingId}/`, { status: 'Cancelled' }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setCancelMessage("Reservation successfully cancelled.");
@@ -74,28 +68,35 @@ const MyTrips = () => {
         return `http://localhost:8000${imagePath.startsWith('/') ? imagePath : `/${imagePath}`}`;
     };
 
-    if (loading) return <div className="min-h-screen p-20 text-center font-bold text-gray-400">Loading your trips...</div>;
+    if (loading) return (
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
+            <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 font-bold">
+                <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                Loading your trips...
+            </div>
+        </div>
+    );
 
     const totalBookings = hotelBookings.length + restaurantBookings.length;
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-6">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-12 px-6">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl font-black text-gray-900 mb-2">My Trips</h1>
-                <p className="text-gray-500 font-medium mb-8">All your hotel stays and restaurant reservations in one place.</p>
+                <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-2">My Trips</h1>
+                <p className="text-gray-500 dark:text-gray-400 font-medium mb-8">All your hotel stays and restaurant reservations in one place.</p>
 
                 {cancelMessage && (
-                    <div className="mb-6 bg-green-100 text-green-800 p-4 rounded-xl font-bold flex items-center gap-3 shadow-sm border border-green-200 animate-in fade-in slide-in-from-top-4">
+                    <div className="mb-6 bg-green-50 dark:bg-green-950/40 text-green-800 dark:text-green-400 p-4 rounded-2xl font-bold flex items-center gap-3 shadow-sm border border-green-200 dark:border-green-900 animate-in fade-in slide-in-from-top-4">
                         <Info size={20} />
                         {cancelMessage}
                     </div>
                 )}
 
                 {totalBookings === 0 ? (
-                    <div className="bg-white p-12 rounded-[2rem] shadow-sm text-center border border-gray-100">
-                        <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-xl font-black text-gray-900 mb-2">No upcoming trips</h3>
-                        <p className="text-gray-500 font-medium">Time to dust off your bags and start planning your next adventure.</p>
+                    <div className="bg-white dark:bg-gray-900 p-12 rounded-3xl shadow-sm text-center border border-gray-100 dark:border-gray-800">
+                        <Calendar className="w-16 h-16 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+                        <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2">No upcoming trips</h3>
+                        <p className="text-gray-500 dark:text-gray-400 font-medium">Time to dust off your bags and start planning your next adventure.</p>
                     </div>
                 ) : (
                     <>
@@ -103,13 +104,13 @@ const MyTrips = () => {
                         <div className="flex gap-2 mb-6">
                             <button
                                 onClick={() => setActiveTab('hotels')}
-                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${activeTab === 'hotels' ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
+                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${activeTab === 'hotels' ? 'bg-blue-600 text-white shadow-md' : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700'}`}
                             >
                                 <Building size={16} /> Hotel Stays ({hotelBookings.length})
                             </button>
                             <button
                                 onClick={() => setActiveTab('restaurants')}
-                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${activeTab === 'restaurants' ? 'bg-orange-500 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
+                                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${activeTab === 'restaurants' ? 'bg-orange-500 text-white shadow-md' : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700'}`}
                             >
                                 <Utensils size={16} /> Reservations ({restaurantBookings.length})
                             </button>
@@ -119,34 +120,37 @@ const MyTrips = () => {
                         {activeTab === 'hotels' && (
                             <div className="space-y-6">
                                 {hotelBookings.length === 0 ? (
-                                    <div className="bg-white p-8 rounded-[2rem] shadow-sm text-center border border-gray-100">
-                                        <Building className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                                        <p className="text-gray-500 font-bold">No hotel bookings yet.</p>
+                                    <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm text-center border border-gray-100 dark:border-gray-800">
+                                        <Building className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-3" />
+                                        <p className="text-gray-500 dark:text-gray-400 font-bold">No hotel bookings yet.</p>
                                     </div>
                                 ) : (
                                     hotelBookings.map((booking) => (
-                                        <div key={booking.id} className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
+                                        <div key={booking.id} className="bg-white dark:bg-gray-900 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
                                             <div className="flex gap-4 items-start">
                                                 {booking.hotel_image && (
                                                     <img src={getImageUrl(booking.hotel_image)} className="w-20 h-20 rounded-2xl object-cover shrink-0" alt="Hotel" />
                                                 )}
                                                 <div>
                                                     <div className="flex items-center gap-3 mb-2">
-                                                        <h3 className="text-xl font-black text-gray-900">{booking.hotel_name || `Booking #${booking.id}`}</h3>
-                                                        <span className={`px-3 py-1 text-[10px] font-black uppercase rounded-lg ${booking.status === 'Cancelled' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-700'}`}>
+                                                        <h3 className="text-xl font-black text-gray-900 dark:text-white">{booking.hotel_name || `Booking #${booking.id}`}</h3>
+                                                        <span className={`px-3 py-1 text-[10px] font-black uppercase rounded-lg ${booking.status === 'Cancelled' ? 'bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400' : 'bg-green-100 dark:bg-green-950/40 text-green-700 dark:text-green-400'}`}>
                                                             {booking.status || 'Confirmed'}
                                                         </span>
                                                     </div>
-                                                    <p className="text-xs font-bold text-blue-600 mb-2">{booking.booking_reference}</p>
-                                                    <p className="text-sm font-bold text-gray-500 mb-1">Check-in: <span className="text-gray-900">{booking.check_in}</span> &mdash; Check-out: <span className="text-gray-900">{booking.check_out}</span></p>
-                                                    <p className="text-sm font-bold text-gray-500">Rooms: <span className="text-gray-900">{booking.rooms}</span> &bull; Total: <span className="text-blue-600 font-black">{booking.total_price}</span></p>
+                                                    <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-2">{booking.booking_reference}</p>
+                                                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-1">
+                                                        Check-in: <span className="text-gray-900 dark:text-white">{booking.check_in}</span> &mdash; Check-out: <span className="text-gray-900 dark:text-white">{booking.check_out}</span>
+                                                    </p>
+                                                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400">
+                                                        Rooms: <span className="text-gray-900 dark:text-white">{booking.rooms}</span> &bull; Total: <span className="text-blue-600 dark:text-blue-400 font-black">{booking.total_price}</span>
+                                                    </p>
                                                 </div>
                                             </div>
-
                                             {booking.status !== 'Cancelled' && (
                                                 <button
                                                     onClick={() => handleCancelHotel(booking.id)}
-                                                    className="py-3 px-6 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-colors flex items-center gap-2 shrink-0"
+                                                    className="py-3 px-6 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 font-bold rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors flex items-center gap-2 shrink-0"
                                                 >
                                                     <XCircle size={18} /> Cancel
                                                 </button>
@@ -161,34 +165,37 @@ const MyTrips = () => {
                         {activeTab === 'restaurants' && (
                             <div className="space-y-6">
                                 {restaurantBookings.length === 0 ? (
-                                    <div className="bg-white p-8 rounded-[2rem] shadow-sm text-center border border-gray-100">
-                                        <Utensils className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                                        <p className="text-gray-500 font-bold">No restaurant reservations yet.</p>
+                                    <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm text-center border border-gray-100 dark:border-gray-800">
+                                        <Utensils className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-3" />
+                                        <p className="text-gray-500 dark:text-gray-400 font-bold">No restaurant reservations yet.</p>
                                     </div>
                                 ) : (
                                     restaurantBookings.map((booking) => (
-                                        <div key={booking.id} className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
+                                        <div key={booking.id} className="bg-white dark:bg-gray-900 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
                                             <div className="flex gap-4 items-start">
                                                 {booking.restaurant_image && (
                                                     <img src={getImageUrl(booking.restaurant_image)} className="w-20 h-20 rounded-2xl object-cover shrink-0" alt="Restaurant" />
                                                 )}
                                                 <div>
                                                     <div className="flex items-center gap-3 mb-2">
-                                                        <h3 className="text-xl font-black text-gray-900">{booking.restaurant_name || `Reservation #${booking.id}`}</h3>
-                                                        <span className={`px-3 py-1 text-[10px] font-black uppercase rounded-lg ${booking.status === 'Cancelled' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-700'}`}>
+                                                        <h3 className="text-xl font-black text-gray-900 dark:text-white">{booking.restaurant_name || `Reservation #${booking.id}`}</h3>
+                                                        <span className={`px-3 py-1 text-[10px] font-black uppercase rounded-lg ${booking.status === 'Cancelled' ? 'bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400' : 'bg-green-100 dark:bg-green-950/40 text-green-700 dark:text-green-400'}`}>
                                                             {booking.status || 'Confirmed'}
                                                         </span>
                                                     </div>
-                                                    <p className="text-xs font-bold text-orange-600 mb-2">{booking.booking_reference}</p>
-                                                    <p className="text-sm font-bold text-gray-500 mb-1">Date: <span className="text-gray-900">{booking.reservation_date}</span> at <span className="text-gray-900">{booking.reservation_time}</span></p>
-                                                    <p className="text-sm font-bold text-gray-500">Guests: <span className="text-gray-900">{booking.number_of_guests}</span> &bull; Total: <span className="text-orange-600 font-black">{booking.total_price}</span></p>
+                                                    <p className="text-xs font-bold text-orange-600 dark:text-orange-400 mb-2">{booking.booking_reference}</p>
+                                                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-1">
+                                                        Date: <span className="text-gray-900 dark:text-white">{booking.reservation_date}</span> at <span className="text-gray-900 dark:text-white">{booking.reservation_time}</span>
+                                                    </p>
+                                                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400">
+                                                        Guests: <span className="text-gray-900 dark:text-white">{booking.number_of_guests}</span>
+                                                    </p>
                                                 </div>
                                             </div>
-
                                             {booking.status !== 'Cancelled' && (
                                                 <button
                                                     onClick={() => handleCancelRestaurant(booking.id)}
-                                                    className="py-3 px-6 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-colors flex items-center gap-2 shrink-0"
+                                                    className="py-3 px-6 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 font-bold rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors flex items-center gap-2 shrink-0"
                                                 >
                                                     <XCircle size={18} /> Cancel
                                                 </button>

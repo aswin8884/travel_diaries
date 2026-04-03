@@ -10,14 +10,15 @@ class HotelBookingSerializer(serializers.ModelSerializer):
         model = HotelBooking
         fields = ['id', 'hotel', 'hotel_name', 'hotel_image', 'user_email',
                   'guest_name', 'guest_email', 'guest_phone',
-                  'check_in', 'check_out', 'rooms', 'total_price',
+                  'check_in', 'check_out', 'rooms', 'total_price', 'advance_price',
                   'status', 'booking_reference', 'created_at']
-        read_only_fields = ['booking_reference', 'created_at']
+        read_only_fields = ['booking_reference', 'created_at', 'advance_price']
 
 class RestaurantBookingSerializer(serializers.ModelSerializer):
     restaurant_name = serializers.CharField(source='restaurant.name', read_only=True)
     restaurant_image = serializers.ImageField(source='restaurant.image', read_only=True)
     user_email = serializers.CharField(source='user.email', read_only=True)
+    total_price = serializers.DecimalField(max_digits=10, decimal_places=2, required=False, default=0)
 
     class Meta:
         model = RestaurantBooking

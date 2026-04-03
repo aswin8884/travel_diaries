@@ -1,68 +1,91 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User } from 'lucide-react';
+import { Mail, Lock, User, Compass } from 'lucide-react';
 import axios from 'axios';
 
 const Register = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'customer' });
+    const [formData, setFormData] = useState({ name: '', email: '', password: '' });
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleRegister = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
         try {
             await axios.post('http://localhost:8000/api/users/register/', {
-                first_name: formData.name, email: formData.email, password: formData.password, role: formData.role
+                first_name: formData.name,
+                email: formData.email,
+                password: formData.password,
+                role: 'customer'
             });
-            alert("Registration Successful! Please sign in.");
+            alert("Account created! Please sign in.");
             navigate('/login');
-        } catch (err) {
-            setError("Registration failed. Email might be in use.");
+        } catch {
+            setError("Registration failed. This email may already be in use.");
+            setLoading(false);
         }
     };
 
+    const inputCls = "w-full pl-11 pr-4 py-3.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium";
+
     return (
-        <div className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
-            <div className="absolute top-10 -right-10 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-2xl opacity-50"></div>
-            <div className="absolute -bottom-8 -left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-2xl opacity-50"></div>
-            <div className="relative w-full max-w-md bg-white/40 backdrop-blur-xl border border-white/50 p-8 rounded-3xl shadow-[0_8px_32px_0_rgba(31,38,135,0.07)]">
-                <h2 className="text-3xl font-black text-center text-gray-800 mb-8 tracking-tight">Create Account</h2>
+        <div className="min-h-[calc(100vh-96px)] bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4 py-12">
+            <div className="fixed top-20 -right-20 w-80 h-80 bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="fixed bottom-0 -left-20 w-80 h-80 bg-violet-500/10 dark:bg-violet-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
-                {error && <div className="bg-red-500/10 border border-red-500/20 text-red-600 text-sm text-center p-3 rounded-xl mb-6 font-medium">{error}</div>}
-
-                <form onSubmit={handleRegister} className="space-y-5">
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
-                        <div className="relative">
-                            <User size={18} className="absolute left-4 top-3.5 text-gray-400" />
-                            <input type="text" required className="w-full pl-11 pr-4 py-3 bg-white/50 border border-white/60 focus:border-blue-400 focus:bg-white/80 rounded-2xl outline-none transition-all shadow-sm backdrop-blur-sm" placeholder="John Doe" onChange={(e) => setFormData({...formData, name: e.target.value})} />
-                        </div>
+            <div className="w-full max-w-md">
+                <div className="text-center mb-8">
+                    <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-blue-500/20">
+                        <Compass className="text-white" size={26}/>
                     </div>
+                    <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Create account</h1>
+                    <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Join the Travel Dairies community</p>
+                </div>
 
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
-                        <div className="relative">
-                            <Mail size={18} className="absolute left-4 top-3.5 text-gray-400" />
-                            <input type="email" required className="w-full pl-11 pr-4 py-3 bg-white/50 border border-white/60 focus:border-blue-400 focus:bg-white/80 rounded-2xl outline-none transition-all shadow-sm backdrop-blur-sm" placeholder="you@example.com" onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-8 shadow-xl shadow-black/5 dark:shadow-black/30">
+                    {error && (
+                        <div className="bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 text-sm text-center p-3.5 rounded-2xl mb-6 font-medium">
+                            {error}
                         </div>
-                    </div>
+                    )}
 
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-                        <div className="relative">
-                            <Lock size={18} className="absolute left-4 top-3.5 text-gray-400" />
-                            <input type="password" required minLength="6" className="w-full pl-11 pr-4 py-3 bg-white/50 border border-white/60 focus:border-blue-400 focus:bg-white/80 rounded-2xl outline-none transition-all shadow-sm backdrop-blur-sm" placeholder="••••••••" onChange={(e) => setFormData({...formData, password: e.target.value})} />
+                    <form onSubmit={handleRegister} className="space-y-5">
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Full Name</label>
+                            <div className="relative">
+                                <User size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"/>
+                                <input type="text" required placeholder="John Doe" onChange={e => setFormData({...formData, name: e.target.value})} className={inputCls}/>
+                            </div>
                         </div>
-                    </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Email</label>
+                            <div className="relative">
+                                <Mail size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"/>
+                                <input type="email" required placeholder="you@example.com" onChange={e => setFormData({...formData, email: e.target.value})} className={inputCls}/>
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Password</label>
+                            <div className="relative">
+                                <Lock size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"/>
+                                <input type="password" required minLength="6" placeholder="••••••••" onChange={e => setFormData({...formData, password: e.target.value})} className={inputCls}/>
+                            </div>
+                        </div>
+                        <button type="submit" disabled={loading}
+                            className="w-full bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-blue-500/25 hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-60 flex items-center justify-center gap-2 mt-2">
+                            {loading ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>Creating...</> : 'Create Account'}
+                        </button>
+                    </form>
 
-                    <button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-3.5 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 mt-2">
-                        Join TravelApp
-                    </button>
-                </form>
-                <p className="text-center text-gray-600 text-sm mt-8 font-medium">Already have an account? <Link to="/login" className="text-blue-600 hover:text-blue-700 hover:underline">Sign in</Link></p>
+                    <p className="text-center text-gray-500 dark:text-gray-400 text-sm mt-6 font-medium">
+                        Already have an account? <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:underline font-bold">Sign in</Link>
+                    </p>
+                </div>
             </div>
         </div>
     );
 };
+
 export default Register;

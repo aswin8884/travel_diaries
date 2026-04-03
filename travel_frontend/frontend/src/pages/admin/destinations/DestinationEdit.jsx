@@ -81,69 +81,68 @@ const DestinationEdit = () => {
         }
     };
 
-    if (isLoading) return <div className="p-20 text-center font-bold text-gray-400">Loading editor...</div>;
+    if (isLoading) return <div className="p-20 text-center font-bold text-gray-400 dark:text-gray-500">Loading editor...</div>;
 
     return (
-        <div className="min-h-screen bg-gray-50/30 pb-20 pt-10 px-6">
+        <div className="min-h-screen bg-gray-50/30 dark:bg-gray-950 pb-20 pt-10 px-6">
             <div className="max-w-4xl mx-auto relative z-10">
-                <div className="bg-white/90 backdrop-blur-2xl p-10 rounded-[2.5rem] shadow-xl border border-gray-100">
-                    
-                    <button onClick={() => navigate('/admin')} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-indigo-600 mb-8 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
+                <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl p-10 rounded-[2.5rem] shadow-xl border border-gray-100 dark:border-gray-800">
+
+                    <button onClick={() => navigate('/admin')} className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-8 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
                         <ArrowLeft size={16} /> Cancel Editing
                     </button>
-                    
-                    <h2 className="text-3xl font-black text-gray-900 mb-8 flex items-center gap-3">
+
+                    <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-8 flex items-center gap-3">
                         <MapPin className="text-indigo-600" size={32}/> Edit Destination
                     </h2>
 
                     <form onSubmit={handleUpdate} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Destination Name</label>
-                                <input type="text" required value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-400 focus:ring-2" />
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Destination Name</label>
+                                <input type="text" required value={editForm.name} onChange={(e) => setEditForm({...editForm, name: e.target.value})} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all font-medium text-lg" />
                             </div>
 
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Short Tagline</label>
-                                <input type="text" required value={editForm.short_description} onChange={(e) => setEditForm({...editForm, short_description: e.target.value})} className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-400 focus:ring-2" />
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Short Tagline</label>
+                                <input type="text" required value={editForm.short_description} onChange={(e) => setEditForm({...editForm, short_description: e.target.value})} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all font-medium text-lg" />
                             </div>
 
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><AlignLeft size={16}/> Full Description</label>
-                                <textarea required rows="4" value={editForm.long_description} onChange={(e) => setEditForm({...editForm, long_description: e.target.value})} className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 resize-none"></textarea>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2"><AlignLeft size={16}/> Full Description</label>
+                                <textarea required rows="4" value={editForm.long_description} onChange={(e) => setEditForm({...editForm, long_description: e.target.value})} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all font-medium text-lg resize-none"></textarea>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><MapPin size={16} className="text-indigo-500"/> Latitude</label>
-                                <input type="number" step="any" required value={editForm.latitude} onChange={(e) => setEditForm({...editForm, latitude: e.target.value})} className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-400 focus:ring-2" />
-                            </div>
-                            
-                            <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><MapPin size={16} className="text-indigo-500"/> Longitude</label>
-                                <input type="number" step="any" required value={editForm.longitude} onChange={(e) => setEditForm({...editForm, longitude: e.target.value})} className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-400 focus:ring-2" />
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2"><MapPin size={16} className="text-indigo-500"/> Latitude</label>
+                                <input type="number" step="any" required value={editForm.latitude} onChange={(e) => setEditForm({...editForm, latitude: e.target.value})} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all font-medium text-lg" />
                             </div>
 
-                            {/* 🔥 ADDED RATING FIELD */}
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2"><MapPin size={16} className="text-indigo-500"/> Longitude</label>
+                                <input type="number" step="any" required value={editForm.longitude} onChange={(e) => setEditForm({...editForm, longitude: e.target.value})} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all font-medium text-lg" />
+                            </div>
+
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
                                     <Star size={16} className="text-yellow-500" /> Star Rating (1.0 - 5.0)
                                 </label>
-                                <input type="number" step="0.1" min="1" max="5" required value={editForm.rating} onChange={(e) => setEditForm({...editForm, rating: e.target.value})} className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all font-medium text-lg" />
+                                <input type="number" step="0.1" min="1" max="5" required value={editForm.rating} onChange={(e) => setEditForm({...editForm, rating: e.target.value})} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all font-medium text-lg" />
                             </div>
 
-                            <div className="p-5 bg-indigo-50/50 rounded-2xl border border-indigo-100">
-                                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><UploadCloud size={16}/> Replace Main Image</label>
-                                <input type="file" accept="image/*" onChange={(e) => { setNewImage(e.target.files[0]); setPreview(URL.createObjectURL(e.target.files[0])); }} className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-bold file:bg-white file:text-indigo-700 cursor-pointer" />
+                            <div className="p-5 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-2xl border border-indigo-100 dark:border-indigo-900">
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2"><UploadCloud size={16}/> Replace Main Image</label>
+                                <input type="file" accept="image/*" onChange={(e) => { setNewImage(e.target.files[0]); setPreview(URL.createObjectURL(e.target.files[0])); }} className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-bold file:bg-white file:text-indigo-700 cursor-pointer text-gray-500 dark:text-gray-400" />
                                 {preview && <img src={preview} alt="Preview" className="mt-3 h-24 rounded-lg object-cover shadow-sm" />}
                             </div>
 
-                            <div className="p-5 bg-indigo-50/50 rounded-2xl border border-indigo-100">
-                                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><Images size={16}/> Replace Entire Gallery</label>
-                                <input type="file" multiple accept="image/*" onChange={(e) => setNewGallery(Array.from(e.target.files))} className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-bold file:bg-white file:text-indigo-700 cursor-pointer" />
+                            <div className="p-5 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-2xl border border-indigo-100 dark:border-indigo-900">
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2"><Images size={16}/> Replace Entire Gallery</label>
+                                <input type="file" multiple accept="image/*" onChange={(e) => setNewGallery(Array.from(e.target.files))} className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-bold file:bg-white file:text-indigo-700 cursor-pointer text-gray-500 dark:text-gray-400" />
                             </div>
                         </div>
 
-                        <div className="pt-8 border-t border-gray-100">
+                        <div className="pt-8 border-t border-gray-100 dark:border-gray-800">
                             <button type="submit" disabled={isSaving} className="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg hover:-translate-y-1 transition-all flex items-center justify-center gap-2 text-xl">
                                 {isSaving ? 'Saving...' : <><Save size={24} /> Save Changes</>}
                             </button>

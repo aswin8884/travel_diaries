@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 
 // Global Components
 import Navbar from './components/global/Navbar.jsx';
@@ -31,8 +32,8 @@ const CustomerLayout = () => {
   return (
     <>
       <Navbar />
-      <div className="pt-24"> 
-        <Outlet /> 
+      <div className="pt-24">
+        <Outlet />
       </div>
     </>
   );
@@ -40,6 +41,7 @@ const CustomerLayout = () => {
 
 function App() {
   return (
+    <ThemeProvider>
     <Router>
       <Routes>
         
@@ -74,6 +76,7 @@ function App() {
 
       </Routes>
     </Router>
+    </ThemeProvider>
   );
 }
 
