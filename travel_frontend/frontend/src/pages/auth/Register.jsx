@@ -1,24 +1,27 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, Compass, CheckCircle, XCircle } from 'lucide-react';
+import { Mail, Lock, User, Compass, CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { isValidEmail, isValidName, isValidPassword } from '../../utils/validate';
 
 const Register = () => {
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-    const [touched, setTouched] = useState({ name: false, email: false, password: false });
+    const [formData, setFormData] = useState({ name: '', email: '', password: '', confirm: '' });
+    const [touched, setTouched] = useState({ name: false, email: false, password: false, confirm: false });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     const pwdCheck = isValidPassword(formData.password);
     const nameOk = isValidName(formData.name);
     const emailOk = isValidEmail(formData.email);
+    const confirmOk = formData.confirm === formData.password && formData.confirm.length > 0;
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        setTouched({ name: true, email: true, password: true });
-        if (!nameOk || !emailOk || !pwdCheck.valid) return;
+        setTouched({ name: true, email: true, password: true, confirm: true });
+        if (!nameOk || !emailOk || !pwdCheck.valid || !confirmOk) return;
         setError('');
         setLoading(true);
         try {
@@ -37,7 +40,7 @@ const Register = () => {
     };
 
     const inputCls = (hasErr) =>
-        `w-full pl-11 pr-4 py-3.5 bg-white dark:bg-gray-800 border ${hasErr ? 'border-red-400 dark:border-red-600' : 'border-gray-200 dark:border-gray-700'} text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium`;
+        `w-full pl-11 pr-11 py-3.5 bg-white dark:bg-gray-800 border ${hasErr ? 'border-red-400 dark:border-red-600' : 'border-gray-200 dark:border-gray-700'} text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium`;
 
     const Req = ({ ok, label }) => (
         <span className={`flex items-center gap-1 text-xs font-medium ${ok ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'}`}>
@@ -67,6 +70,7 @@ const Register = () => {
                     )}
 
                     <form onSubmit={handleRegister} className="space-y-5">
+                        {/* Full Name */}
                         <div>
                             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Full Name</label>
                             <div className="relative">
@@ -85,6 +89,7 @@ const Register = () => {
                             )}
                         </div>
 
+                        {/* Email */}
                         <div>
                             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Email</label>
                             <div className="relative">
@@ -103,18 +108,26 @@ const Register = () => {
                             )}
                         </div>
 
+                        {/* Password */}
                         <div>
                             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Password</label>
                             <div className="relative">
                                 <Lock size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"/>
                                 <input
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     placeholder="••••••••"
                                     value={formData.password}
                                     onChange={e => setFormData({...formData, password: e.target.value})}
                                     onBlur={() => setTouched(t => ({...t, password: true}))}
                                     className={inputCls(touched.password && !pwdCheck.valid)}
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(v => !v)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                >
+                                    {showPassword ? <EyeOff size={17}/> : <Eye size={17}/>}
+                                </button>
                             </div>
                             {(touched.password || formData.password.length > 0) && (
                                 <div className="mt-2 grid grid-cols-2 gap-1.5 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
@@ -123,6 +136,39 @@ const Register = () => {
                                     <Req ok={pwdCheck.hasNumber} label="Number"/>
                                     <Req ok={pwdCheck.hasSpecial} label="Special character"/>
                                 </div>
+                            )}
+                        </div>
+
+                        {/* Confirm Password */}
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Confirm Password</label>
+                            <div className="relative">
+                                <Lock size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"/>
+                                <input
+                                    type={showConfirm ? 'text' : 'password'}
+                                    placeholder="••••••••"
+                                    value={formData.confirm}
+                                    onChange={e => setFormData({...formData, confirm: e.target.value})}
+                                    onBlur={() => setTouched(t => ({...t, confirm: true}))}
+                                    className={inputCls(touched.confirm && !confirmOk)}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirm(v => !v)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                >
+                                    {showConfirm ? <EyeOff size={17}/> : <Eye size={17}/>}
+                                </button>
+                            </div>
+                            {touched.confirm && !confirmOk && (
+                                <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">
+                                    {formData.confirm.length === 0 ? 'Please confirm your password.' : 'Passwords do not match.'}
+                                </p>
+                            )}
+                            {touched.confirm && confirmOk && (
+                                <p className="text-xs text-green-600 dark:text-green-400 mt-1.5 font-medium flex items-center gap-1">
+                                    <CheckCircle size={11}/> Passwords match
+                                </p>
                             )}
                         </div>
 

@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import { Mail, Lock, ShieldCheck, User, Compass } from 'lucide-react';
+import { Mail, Lock, ShieldCheck, User, Compass, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { isValidEmail } from '../../utils/validate';
@@ -13,6 +13,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailErr, setEmailErr] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -43,7 +44,7 @@ const Login = () => {
         }
     };
 
-    const inputCls = "w-full pl-11 pr-4 py-3.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium";
+    const inputCls = "w-full pl-11 pr-11 py-3.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium";
 
     return (
         <div className="min-h-[calc(100vh-96px)] bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4 py-12">
@@ -96,7 +97,10 @@ const Login = () => {
                             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Password</label>
                             <div className="relative">
                                 <Lock size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"/>
-                                <input type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className={inputCls}/>
+                                <input type={showPassword ? 'text' : 'password'} required value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className={inputCls}/>
+                                <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                    {showPassword ? <EyeOff size={17}/> : <Eye size={17}/>}
+                                </button>
                             </div>
                         </div>
                         <button type="submit" disabled={loading}
