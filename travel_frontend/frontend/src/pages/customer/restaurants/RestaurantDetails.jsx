@@ -38,6 +38,17 @@ const RestaurantDetails = () => {
             .catch(err => console.error(err));
     }, [id]);
 
+    // Must be before any early return — clear selected time if it's now in the past when date changes
+    useEffect(() => {
+        if (!time || !date) return;
+        const todayStr = new Date().toISOString().split('T')[0];
+        if (date !== todayStr) return;
+        const now = new Date();
+        const cutoff = now.getHours() * 60 + now.getMinutes() + 30;
+        const [h, m] = time.split(':').map(Number);
+        if (h * 60 + m <= cutoff) setTime('');
+    }, [date]); // eslint-disable-line react-hooks/exhaustive-deps
+
     const getImageUrl = (imagePath) => {
         if (!imagePath) return '';
         if (imagePath.startsWith('http')) return imagePath;
@@ -80,11 +91,6 @@ const RestaurantDetails = () => {
             return h * 60 + m > currentTotalMins;
         });
     })();
-
-    // Clear the selected time if it's no longer in available slots (e.g. user picked today)
-    useEffect(() => {
-        if (time && !availableTimeSlots.includes(time)) setTime('');
-    }, [date]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const allImages = [restaurant.image, ...(restaurant.gallery_images?.map(g => g.image) || restaurant.images?.map(g => g.image) || [])];
     const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
