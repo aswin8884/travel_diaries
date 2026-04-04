@@ -70,6 +70,22 @@ const RestaurantDetails = () => {
         return slots;
     })();
 
+    // When today is selected, hide slots that are already past (+ 30-min booking lead time)
+    const availableTimeSlots = (() => {
+        if (date !== today) return timeSlots;
+        const now = new Date();
+        const currentTotalMins = now.getHours() * 60 + now.getMinutes() + 30; // 30-min lead time
+        return timeSlots.filter(slot => {
+            const [h, m] = slot.split(':').map(Number);
+            return h * 60 + m > currentTotalMins;
+        });
+    })();
+
+    // Clear the selected time if it's no longer in available slots (e.g. user picked today)
+    useEffect(() => {
+        if (time && !availableTimeSlots.includes(time)) setTime('');
+    }, [date]); // eslint-disable-line react-hooks/exhaustive-deps
+
     const allImages = [restaurant.image, ...(restaurant.gallery_images?.map(g => g.image) || restaurant.images?.map(g => g.image) || [])];
     const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
     const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
@@ -250,12 +266,18 @@ const RestaurantDetails = () => {
                                     </div>
                                     <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
                                         <label className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase mb-2">Time</label>
-                                        <select value={time} onChange={(e)=>setTime(e.target.value)} className="w-full bg-transparent dark:bg-gray-800 font-bold text-gray-900 dark:text-white outline-none cursor-pointer dark:[color-scheme:dark]">
-                                            <option value="">Select a time</option>
-                                            {timeSlots.map(slot => (
-                                                <option key={slot} value={slot}>{slot}</option>
-                                            ))}
-                                        </select>
+                                        {availableTimeSlots.length === 0 ? (
+                                            <p className="text-xs font-bold text-red-500 dark:text-red-400 mt-1">
+                                                No slots available for today. Please select a future date.
+                                            </p>
+                                        ) : (
+                                            <select value={time} onChange={(e)=>setTime(e.target.value)} className="w-full bg-transparent dark:bg-gray-800 font-bold text-gray-900 dark:text-white outline-none cursor-pointer dark:[color-scheme:dark]">
+                                                <option value="">Select a time</option>
+                                                {availableTimeSlots.map(slot => (
+                                                    <option key={slot} value={slot}>{slot}</option>
+                                                ))}
+                                            </select>
+                                        )}
                                     </div>
                                     <div className="p-5 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 flex justify-between items-center">
                                         <label className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase">Party Size</label>
