@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, ShieldCheck, CreditCard, Lock, ChevronRight, Info } from 'lucide-react';
 import axios from 'axios';
-import { isValidName, isValidEmail, isValidPhone, isValidCardNumber, isValidExpiry, isValidCVV } from '../../../utils/validate';
+import { isValidName, isValidEmail, isValidPhoneForCountry, phoneHint, isValidCardNumber, isValidExpiry, isValidCVV } from '../../../utils/validate';
+import PhoneInput from '../../../components/global/PhoneInput';
 
 const PaypalIcon = () => (
     <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
@@ -33,7 +34,8 @@ const Checkout = () => {
     const bookingData = location.state;
 
     const [step, setStep] = useState(1); // 1=details, 2=payment, 3=processing, 4=success
-    const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+    const [formData, setFormData] = useState({ name: '', email: '' });
+    const [phoneMeta, setPhoneMeta] = useState({ countryCode: 'IN', dialCode: '+91', number: '' });
     const [guestErrors, setGuestErrors] = useState({});
     const [paymentMethod, setPaymentMethod] = useState('card');
     const [cardData, setCardData] = useState({ number: '', expiry: '', cvv: '', holder: '' });
@@ -56,7 +58,7 @@ const Checkout = () => {
         const errs = {};
         if (!isValidName(formData.name)) errs.name = 'Name must be at least 2 characters.';
         if (!isValidEmail(formData.email)) errs.email = 'Enter a valid email address.';
-        if (!isValidPhone(formData.phone)) errs.phone = 'Enter a valid 10-digit Indian phone number.';
+        if (!isValidPhoneForCountry(phoneMeta.number, phoneMeta.dialCode)) errs.phone = `Enter a valid phone number (${phoneHint(phoneMeta.dialCode)}).`;
         setGuestErrors(errs);
         if (Object.keys(errs).length > 0) return;
         setStep(2);
@@ -85,7 +87,7 @@ const Checkout = () => {
                 rooms: bookingData.rooms,
                 guest_name: formData.name,
                 guest_email: formData.email,
-                guest_phone: formData.phone,
+                guest_phone: phoneMeta.dialCode + phoneMeta.number,
                 total_price: bookingData.totalPrice,
                 advance_price: advancePrice,
             }, { headers: { Authorization: `Bearer ${token}` } });
@@ -235,7 +237,12 @@ const Checkout = () => {
                                 </div>
                                 <div>
                                     <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Phone Number</label>
-                                    <input required type="tel" value={formData.phone} onChange={(e)=>{ setFormData({...formData, phone: e.target.value}); setGuestErrors(p=>({...p,phone:''})); }} className={`${inputCls}${guestErrors.phone ? ' border-red-400 dark:border-red-600' : ''}`} placeholder="+91 98765 43210" />
+                                    <PhoneInput
+                                        value={phoneMeta}
+                                        onChange={(v) => { setPhoneMeta(v); setGuestErrors(p => ({...p, phone: ''})); }}
+                                        hasError={!!guestErrors.phone}
+                                        placeholder="Phone number"
+                                    />
                                     {guestErrors.phone && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{guestErrors.phone}</p>}
                                 </div>
                             </div>

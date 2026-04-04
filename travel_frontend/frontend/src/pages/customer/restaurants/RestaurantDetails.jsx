@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, Utensils, Star, ArrowLeft, CheckCircle, ShieldCheck, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
-import { isValidName, isValidEmail, isValidPhone } from '../../../utils/validate';
+import { isValidName, isValidEmail, isValidPhoneForCountry, phoneHint } from '../../../utils/validate';
+import PhoneInput from '../../../components/global/PhoneInput';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -24,6 +25,7 @@ const RestaurantDetails = () => {
     const [time, setTime] = useState('');
     const [showGuestForm, setShowGuestForm] = useState(false);
     const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+    const [phoneMeta, setPhoneMeta] = useState({ countryCode: 'IN', dialCode: '+91', number: '' });
     const [formErrors, setFormErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -85,7 +87,7 @@ const RestaurantDetails = () => {
         const errs = {};
         if (!isValidName(formData.name)) errs.name = 'Name must be at least 2 characters.';
         if (!isValidEmail(formData.email)) errs.email = 'Enter a valid email address.';
-        if (!isValidPhone(formData.phone)) errs.phone = 'Enter a valid 10-digit Indian phone number.';
+        if (!isValidPhoneForCountry(phoneMeta.number, phoneMeta.dialCode)) errs.phone = `Enter a valid phone number (${phoneHint(phoneMeta.dialCode)}).`;
         setFormErrors(errs);
         if (Object.keys(errs).length > 0) return;
         setIsSubmitting(true);
@@ -103,7 +105,7 @@ const RestaurantDetails = () => {
                 number_of_guests: parseInt(guests),
                 guest_name: formData.name,
                 guest_email: formData.email,
-                guest_phone: formData.phone,
+                guest_phone: phoneMeta.dialCode + phoneMeta.number,
                 total_price: 0
             }, { headers: { Authorization: `Bearer ${token}` } });
 
@@ -291,7 +293,12 @@ const RestaurantDetails = () => {
                                     </div>
                                     <div>
                                         <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Phone Number</label>
-                                        <input required type="tel" value={formData.phone} onChange={(e) => { setFormData({...formData, phone: e.target.value}); setFormErrors(p=>({...p,phone:''})); }} className={`w-full p-4 rounded-xl border ${formErrors.phone ? 'border-red-400 dark:border-red-600' : 'border-gray-200 dark:border-gray-700'} bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold focus:border-orange-400 focus:ring-2 focus:ring-orange-100 dark:focus:ring-orange-900/30 outline-none transition-all`} placeholder="+91 98765 43210" />
+                                        <PhoneInput
+                                            value={phoneMeta}
+                                            onChange={(v) => { setPhoneMeta(v); setFormErrors(p => ({...p, phone: ''})); }}
+                                            hasError={!!formErrors.phone}
+                                            placeholder="Phone number"
+                                        />
                                         {formErrors.phone && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{formErrors.phone}</p>}
                                     </div>
 

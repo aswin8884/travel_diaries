@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, Shield, LogOut, Save, Camera, Phone, MapPin, LoaderCircle, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
-import { isValidPhone } from '../../utils/validate';
+import { isValidPhoneForCountry, phoneHint } from '../../utils/validate';
+import PhoneInput, { COUNTRIES } from '../../components/global/PhoneInput';
 
 const inputCls = "w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-750 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium";
 const inputWithIconCls = "w-full pl-12 pr-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-750 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium";
@@ -15,20 +16,26 @@ const MyAccount = () => {
     const [fetchError, setFetchError] = useState(false);
     const [saved, setSaved] = useState(false);
     const [phoneError, setPhoneError] = useState('');
+    const [phoneMeta, setPhoneMeta] = useState({ countryCode: 'IN', dialCode: '+91', number: '' });
     const [user, setUser] = useState({ first_name: '', last_name: '', email: '', username: '', phone_number: '', address: '' });
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
         if (!token) { navigate('/login'); return; }
         axios.get('http://localhost:8000/api/users/me/', { headers: { Authorization: `Bearer ${token}` } })
-            .then(res => setUser({
-                first_name: res.data.first_name || '',
-                last_name: res.data.last_name || '',
-                email: res.data.email || '',
-                username: res.data.username || '',
-                phone_number: res.data.phone_number || '',
-                address: res.data.address || ''
-            }))
+            .then(res => {
+                const raw = res.data.phone_number || '';
+                const matched = COUNTRIES.slice().sort((a, b) => b.dial.length - a.dial.length).find(c => raw.startsWith(c.dial));
+                if (matched) setPhoneMeta({ countryCode: matched.code, dialCode: matched.dial, number: raw.slice(matched.dial.length) });
+                else if (raw) setPhoneMeta(p => ({ ...p, number: raw }));
+                setUser({
+                    first_name: res.data.first_name || '',
+                    last_name: res.data.last_name || '',
+                    email: res.data.email || '',
+                    username: res.data.username || '',
+                    address: res.data.address || ''
+                });
+            })
             .catch(err => {
                 setFetchError(true);
                 if (err.response?.status === 401) { localStorage.removeItem('access_token'); navigate('/login'); }
@@ -38,8 +45,8 @@ const MyAccount = () => {
 
     const handleSave = async (e) => {
         e.preventDefault();
-        if (user.phone_number && !isValidPhone(user.phone_number)) {
-            setPhoneError('Enter a valid 10-digit Indian phone number (starting with 6-9).');
+        if (phoneMeta.number && !isValidPhoneForCountry(phoneMeta.number, phoneMeta.dialCode)) {
+            setPhoneError(`Enter a valid phone number (${phoneHint(phoneMeta.dialCode)}).`);
             return;
         }
         setPhoneError('');
@@ -48,7 +55,8 @@ const MyAccount = () => {
             const token = localStorage.getItem('access_token');
             await axios.patch('http://localhost:8000/api/users/me/', {
                 first_name: user.first_name, last_name: user.last_name,
-                phone_number: user.phone_number, address: user.address
+                phone_number: phoneMeta.number ? phoneMeta.dialCode + phoneMeta.number : '',
+                address: user.address
             }, { headers: { Authorization: `Bearer ${token}` } });
             setSaved(true);
             setTimeout(() => setSaved(false), 3000);
@@ -158,10 +166,12 @@ const MyAccount = () => {
                                 <div className="space-y-4">
                                     <div>
                                         <label className={labelCls}>Phone Number</label>
-                                        <div className="relative">
-                                            <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"/>
-                                            <input type="tel" value={user.phone_number} onChange={e => { setUser({...user, phone_number: e.target.value}); setPhoneError(''); }} onBlur={() => { if (user.phone_number && !isValidPhone(user.phone_number)) setPhoneError('Enter a valid 10-digit Indian phone number (starting with 6-9).'); }} placeholder="Your phone number" className={`${inputWithIconCls}${phoneError ? ' border-red-400 dark:border-red-600' : ''}`}/>
-                                        </div>
+                                        <PhoneInput
+                                            value={phoneMeta}
+                                            onChange={(v) => { setPhoneMeta(v); setPhoneError(''); }}
+                                            hasError={!!phoneError}
+                                            placeholder="Phone number"
+                                        />
                                         {phoneError && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{phoneError}</p>}
                                     </div>
                                     <div>
