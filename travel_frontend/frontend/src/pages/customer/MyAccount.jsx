@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, Shield, LogOut, Save, Camera, Phone, MapPin, LoaderCircle, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
+import { isValidPhone } from '../../utils/validate';
 
 const inputCls = "w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-750 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium";
 const inputWithIconCls = "w-full pl-12 pr-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-750 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium";
@@ -13,6 +14,7 @@ const MyAccount = () => {
     const [loading, setLoading] = useState(true);
     const [fetchError, setFetchError] = useState(false);
     const [saved, setSaved] = useState(false);
+    const [phoneError, setPhoneError] = useState('');
     const [user, setUser] = useState({ first_name: '', last_name: '', email: '', username: '', phone_number: '', address: '' });
 
     useEffect(() => {
@@ -36,6 +38,11 @@ const MyAccount = () => {
 
     const handleSave = async (e) => {
         e.preventDefault();
+        if (user.phone_number && !isValidPhone(user.phone_number)) {
+            setPhoneError('Enter a valid 10-digit Indian phone number (starting with 6-9).');
+            return;
+        }
+        setPhoneError('');
         setIsSaving(true);
         try {
             const token = localStorage.getItem('access_token');
@@ -153,8 +160,9 @@ const MyAccount = () => {
                                         <label className={labelCls}>Phone Number</label>
                                         <div className="relative">
                                             <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"/>
-                                            <input type="tel" value={user.phone_number} onChange={e => setUser({...user, phone_number: e.target.value})} placeholder="Your phone number" className={inputWithIconCls}/>
+                                            <input type="tel" value={user.phone_number} onChange={e => { setUser({...user, phone_number: e.target.value}); setPhoneError(''); }} onBlur={() => { if (user.phone_number && !isValidPhone(user.phone_number)) setPhoneError('Enter a valid 10-digit Indian phone number (starting with 6-9).'); }} placeholder="Your phone number" className={`${inputWithIconCls}${phoneError ? ' border-red-400 dark:border-red-600' : ''}`}/>
                                         </div>
+                                        {phoneError && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{phoneError}</p>}
                                     </div>
                                     <div>
                                         <label className={labelCls}>Home Address</label>

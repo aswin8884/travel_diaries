@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UploadCloud, Building, MapPin, AlignLeft, Star, ArrowLeft, Save, Images, Hash, BedDouble, PenTool } from 'lucide-react';
 import axios from 'axios';
+import { isValidLatitude, isValidLongitude, isValidPrice, isValidRating } from '../../../utils/validate';
 
 // Accept initialData (for editing), and callbacks for cancel/success
 const HotelForm = ({ initialData = null, onCancel, onSuccess }) => {
@@ -50,6 +51,12 @@ const HotelForm = ({ initialData = null, onCancel, onSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const validationErrors = [];
+        if (!isValidLatitude(latitude)) validationErrors.push('Latitude must be between -90 and 90.');
+        if (!isValidLongitude(longitude)) validationErrors.push('Longitude must be between -180 and 180.');
+        if (!isValidPrice(price)) validationErrors.push('Price must be greater than 0.');
+        if (!isValidRating(rating)) validationErrors.push('Rating must be between 1.0 and 5.0.');
+        if (validationErrors.length > 0) { setErrorMessage(validationErrors.join(' ')); return; }
         setIsSaving(true);
         setErrorMessage('');
 

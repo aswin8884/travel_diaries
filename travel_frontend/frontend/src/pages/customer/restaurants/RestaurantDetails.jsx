@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, Utensils, Star, ArrowLeft, CheckCircle, ShieldCheck, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
+import { isValidName, isValidEmail, isValidPhone } from '../../../utils/validate';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -23,6 +24,7 @@ const RestaurantDetails = () => {
     const [time, setTime] = useState('');
     const [showGuestForm, setShowGuestForm] = useState(false);
     const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+    const [formErrors, setFormErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [bookingRef, setBookingRef] = useState('');
@@ -80,6 +82,12 @@ const RestaurantDetails = () => {
 
     const handleSubmitBooking = async (e) => {
         e.preventDefault();
+        const errs = {};
+        if (!isValidName(formData.name)) errs.name = 'Name must be at least 2 characters.';
+        if (!isValidEmail(formData.email)) errs.email = 'Enter a valid email address.';
+        if (!isValidPhone(formData.phone)) errs.phone = 'Enter a valid 10-digit Indian phone number.';
+        setFormErrors(errs);
+        if (Object.keys(errs).length > 0) return;
         setIsSubmitting(true);
         try {
             const token = localStorage.getItem('access_token');
@@ -273,15 +281,18 @@ const RestaurantDetails = () => {
                                 <form onSubmit={handleSubmitBooking} className="space-y-4">
                                     <div>
                                         <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Full Name</label>
-                                        <input required type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold focus:border-orange-400 focus:ring-2 focus:ring-orange-100 dark:focus:ring-orange-900/30 outline-none transition-all" placeholder="John Doe" />
+                                        <input required type="text" value={formData.name} onChange={(e) => { setFormData({...formData, name: e.target.value}); setFormErrors(p=>({...p,name:''})); }} className={`w-full p-4 rounded-xl border ${formErrors.name ? 'border-red-400 dark:border-red-600' : 'border-gray-200 dark:border-gray-700'} bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold focus:border-orange-400 focus:ring-2 focus:ring-orange-100 dark:focus:ring-orange-900/30 outline-none transition-all`} placeholder="John Doe" />
+                                        {formErrors.name && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{formErrors.name}</p>}
                                     </div>
                                     <div>
                                         <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Email Address</label>
-                                        <input required type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold focus:border-orange-400 focus:ring-2 focus:ring-orange-100 dark:focus:ring-orange-900/30 outline-none transition-all" placeholder="john@example.com" />
+                                        <input required type="email" value={formData.email} onChange={(e) => { setFormData({...formData, email: e.target.value}); setFormErrors(p=>({...p,email:''})); }} className={`w-full p-4 rounded-xl border ${formErrors.email ? 'border-red-400 dark:border-red-600' : 'border-gray-200 dark:border-gray-700'} bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold focus:border-orange-400 focus:ring-2 focus:ring-orange-100 dark:focus:ring-orange-900/30 outline-none transition-all`} placeholder="john@example.com" />
+                                        {formErrors.email && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{formErrors.email}</p>}
                                     </div>
                                     <div>
                                         <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Phone Number</label>
-                                        <input required type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold focus:border-orange-400 focus:ring-2 focus:ring-orange-100 dark:focus:ring-orange-900/30 outline-none transition-all" placeholder="+91 98765 43210" />
+                                        <input required type="tel" value={formData.phone} onChange={(e) => { setFormData({...formData, phone: e.target.value}); setFormErrors(p=>({...p,phone:''})); }} className={`w-full p-4 rounded-xl border ${formErrors.phone ? 'border-red-400 dark:border-red-600' : 'border-gray-200 dark:border-gray-700'} bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-bold focus:border-orange-400 focus:ring-2 focus:ring-orange-100 dark:focus:ring-orange-900/30 outline-none transition-all`} placeholder="+91 98765 43210" />
+                                        {formErrors.phone && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{formErrors.phone}</p>}
                                     </div>
 
                                     <div className="bg-orange-50 dark:bg-orange-950/30 p-4 rounded-2xl border border-orange-100 dark:border-orange-900 text-sm">

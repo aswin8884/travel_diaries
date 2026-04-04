@@ -4,6 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { Mail, Lock, ShieldCheck, User, Compass } from 'lucide-react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { isValidEmail } from '../../utils/validate';
 
 const Login = () => {
     const { login } = useContext(AuthContext);
@@ -11,11 +12,17 @@ const Login = () => {
     const [loginRole, setLoginRole] = useState('customer');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [emailErr, setEmailErr] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        if (!isValidEmail(email)) {
+            setEmailErr('Enter a valid email address.');
+            return;
+        }
+        setEmailErr('');
         setError('');
         setLoading(true);
         try {
@@ -81,8 +88,9 @@ const Login = () => {
                             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Email</label>
                             <div className="relative">
                                 <Mail size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"/>
-                                <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" className={inputCls}/>
+                                <input type="email" required value={email} onChange={e => { setEmail(e.target.value); if (emailErr) setEmailErr(''); }} onBlur={() => { if (email && !isValidEmail(email)) setEmailErr('Enter a valid email address.'); }} placeholder="you@example.com" className={`${inputCls}${emailErr ? ' border-red-400 dark:border-red-600' : ''}`}/>
                             </div>
+                            {emailErr && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{emailErr}</p>}
                         </div>
                         <div>
                             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Password</label>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, ShieldCheck, CreditCard, Lock, ChevronRight, Info } from 'lucide-react';
 import axios from 'axios';
+import { isValidName, isValidEmail, isValidPhone, isValidCardNumber, isValidExpiry, isValidCVV } from '../../../utils/validate';
 
 const PaypalIcon = () => (
     <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
@@ -33,8 +34,10 @@ const Checkout = () => {
 
     const [step, setStep] = useState(1); // 1=details, 2=payment, 3=processing, 4=success
     const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+    const [guestErrors, setGuestErrors] = useState({});
     const [paymentMethod, setPaymentMethod] = useState('card');
     const [cardData, setCardData] = useState({ number: '', expiry: '', cvv: '', holder: '' });
+    const [cardErrors, setCardErrors] = useState({});
     const [upiId, setUpiId] = useState('');
     const [paypalEmail, setPaypalEmail] = useState('');
     const [bookingRef, setBookingRef] = useState('');
@@ -50,11 +53,25 @@ const Checkout = () => {
 
     const handleDetailsSubmit = (e) => {
         e.preventDefault();
+        const errs = {};
+        if (!isValidName(formData.name)) errs.name = 'Name must be at least 2 characters.';
+        if (!isValidEmail(formData.email)) errs.email = 'Enter a valid email address.';
+        if (!isValidPhone(formData.phone)) errs.phone = 'Enter a valid 10-digit Indian phone number.';
+        setGuestErrors(errs);
+        if (Object.keys(errs).length > 0) return;
         setStep(2);
     };
 
     const handlePaymentSubmit = async (e) => {
         e.preventDefault();
+        if (paymentMethod === 'card') {
+            const errs = {};
+            if (!isValidCardNumber(cardData.number)) errs.number = 'Enter a valid 16-digit card number.';
+            if (!isValidExpiry(cardData.expiry)) errs.expiry = 'Enter a valid future expiry (MM/YY).';
+            if (!isValidCVV(cardData.cvv)) errs.cvv = 'Enter a valid 3 or 4-digit CVV.';
+            setCardErrors(errs);
+            if (Object.keys(errs).length > 0) return;
+        }
         setStep(3);
 
         await new Promise(resolve => setTimeout(resolve, 2200));
@@ -208,15 +225,18 @@ const Checkout = () => {
                                 <h3 className="text-lg font-black text-gray-900 dark:text-white mb-4">Who's Staying?</h3>
                                 <div>
                                     <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Full Name</label>
-                                    <input required type="text" value={formData.name} onChange={(e)=>setFormData({...formData, name: e.target.value})} className={inputCls} placeholder="John Doe" />
+                                    <input required type="text" value={formData.name} onChange={(e)=>{ setFormData({...formData, name: e.target.value}); setGuestErrors(p=>({...p,name:''})); }} className={`${inputCls}${guestErrors.name ? ' border-red-400 dark:border-red-600' : ''}`} placeholder="John Doe" />
+                                    {guestErrors.name && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{guestErrors.name}</p>}
                                 </div>
                                 <div>
                                     <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Email Address</label>
-                                    <input required type="email" value={formData.email} onChange={(e)=>setFormData({...formData, email: e.target.value})} className={inputCls} placeholder="john@example.com" />
+                                    <input required type="email" value={formData.email} onChange={(e)=>{ setFormData({...formData, email: e.target.value}); setGuestErrors(p=>({...p,email:''})); }} className={`${inputCls}${guestErrors.email ? ' border-red-400 dark:border-red-600' : ''}`} placeholder="john@example.com" />
+                                    {guestErrors.email && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{guestErrors.email}</p>}
                                 </div>
                                 <div>
                                     <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Phone Number</label>
-                                    <input required type="tel" value={formData.phone} onChange={(e)=>setFormData({...formData, phone: e.target.value})} className={inputCls} placeholder="+91 98765 43210" />
+                                    <input required type="tel" value={formData.phone} onChange={(e)=>{ setFormData({...formData, phone: e.target.value}); setGuestErrors(p=>({...p,phone:''})); }} className={`${inputCls}${guestErrors.phone ? ' border-red-400 dark:border-red-600' : ''}`} placeholder="+91 98765 43210" />
+                                    {guestErrors.phone && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{guestErrors.phone}</p>}
                                 </div>
                             </div>
                             <button type="submit" className="w-full py-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black rounded-2xl shadow-xl shadow-blue-500/30 dark:shadow-blue-900/50 hover:-translate-y-0.5 active:translate-y-0 transition-all flex justify-center items-center gap-2 text-lg">
@@ -254,7 +274,8 @@ const Checkout = () => {
                                     <h3 className="font-black text-gray-900 dark:text-white flex items-center gap-2"><CreditCard size={18} className="text-blue-600"/> Card Details</h3>
                                     <div>
                                         <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Card Number</label>
-                                        <input required type="text" value={cardData.number} onChange={(e)=>setCardData({...cardData, number: formatCardNumber(e.target.value)})} className={`${inputCls} font-mono tracking-widest`} placeholder="1234 5678 9012 3456" maxLength={19} />
+                                        <input required type="text" value={cardData.number} onChange={(e)=>{ setCardData({...cardData, number: formatCardNumber(e.target.value)}); setCardErrors(p=>({...p,number:''})); }} className={`${inputCls} font-mono tracking-widest${cardErrors.number ? ' border-red-400 dark:border-red-600' : ''}`} placeholder="1234 5678 9012 3456" maxLength={19} />
+                                        {cardErrors.number && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{cardErrors.number}</p>}
                                     </div>
                                     <div>
                                         <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Cardholder Name</label>
@@ -263,11 +284,13 @@ const Checkout = () => {
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
                                             <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Expiry</label>
-                                            <input required type="text" value={cardData.expiry} onChange={(e)=>setCardData({...cardData, expiry: formatExpiry(e.target.value)})} className={`${inputCls} font-mono`} placeholder="MM/YY" maxLength={5} />
+                                            <input required type="text" value={cardData.expiry} onChange={(e)=>{ setCardData({...cardData, expiry: formatExpiry(e.target.value)}); setCardErrors(p=>({...p,expiry:''})); }} className={`${inputCls} font-mono${cardErrors.expiry ? ' border-red-400 dark:border-red-600' : ''}`} placeholder="MM/YY" maxLength={5} />
+                                            {cardErrors.expiry && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{cardErrors.expiry}</p>}
                                         </div>
                                         <div>
                                             <label className="block text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">CVV</label>
-                                            <input required type="password" value={cardData.cvv} onChange={(e)=>setCardData({...cardData, cvv: e.target.value.replace(/\D/g,'').substring(0,4)})} className={`${inputCls} font-mono`} placeholder="•••" maxLength={4} />
+                                            <input required type="password" value={cardData.cvv} onChange={(e)=>{ setCardData({...cardData, cvv: e.target.value.replace(/\D/g,'').substring(0,4)}); setCardErrors(p=>({...p,cvv:''})); }} className={`${inputCls} font-mono${cardErrors.cvv ? ' border-red-400 dark:border-red-600' : ''}`} placeholder="•••" maxLength={4} />
+                                            {cardErrors.cvv && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium">{cardErrors.cvv}</p>}
                                         </div>
                                     </div>
                                 </div>
