@@ -144,7 +144,7 @@ const RestaurantDetails = () => {
                         </div>
                     </div>
 
-                    <button onClick={() => navigate('/my-trips')} className="w-full py-4 bg-gray-900 dark:bg-gray-700 text-white font-black rounded-2xl hover:bg-gray-800 dark:hover:bg-gray-600 transition-all">
+                    <button onClick={() => navigate('/my-trips')} className="w-full py-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-2xl shadow-xl shadow-orange-500/30 dark:shadow-orange-900/50 hover:-translate-y-0.5 active:translate-y-0 transition-all">
                         View My Trips
                     </button>
                 </div>
@@ -258,9 +258,9 @@ const RestaurantDetails = () => {
                                     <div className="p-5 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 flex justify-between items-center">
                                         <label className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase">Party Size</label>
                                         <div className="flex items-center gap-4">
-                                            <button type="button" onClick={()=>setGuests(Math.max(1, guests-1))} className="w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 font-black text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors shadow-sm">-</button>
+                                            <button type="button" onClick={()=>setGuests(Math.max(1, guests-1))} className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 text-white font-black shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:scale-110 active:scale-95 transition-all">−</button>
                                             <span className="font-black text-xl w-6 text-center text-gray-900 dark:text-white">{guests}</span>
-                                            <button type="button" onClick={()=>setGuests(Math.min(restaurant.max_guests_per_slot || 20, guests+1))} className="w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 font-black text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors shadow-sm">+</button>
+                                            <button type="button" onClick={()=>setGuests(Math.min(restaurant.max_guests_per_slot || 20, guests+1))} className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 text-white font-black shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:scale-110 active:scale-95 transition-all">+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -268,7 +268,7 @@ const RestaurantDetails = () => {
                                 <button
                                     onClick={handleReserve}
                                     disabled={!date || !time}
-                                    className="w-full py-5 bg-orange-500 text-white font-black rounded-2xl shadow-xl shadow-orange-100 hover:bg-orange-600 disabled:bg-gray-200 dark:disabled:bg-gray-700 disabled:shadow-none transition-all active:scale-95"
+                                    className="w-full py-5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-2xl shadow-xl shadow-orange-500/30 dark:shadow-orange-900/50 hover:shadow-orange-500/50 hover:-translate-y-0.5 active:translate-y-0 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-gray-700 dark:disabled:to-gray-700 disabled:shadow-none disabled:cursor-not-allowed transition-all"
                                 >
                                     Confirm Reservation
                                 </button>
@@ -301,7 +301,7 @@ const RestaurantDetails = () => {
                                         <div className="flex justify-between font-bold text-gray-700 dark:text-gray-300"><span>Guests:</span><span>{guests}</span></div>
                                     </div>
 
-                                    <button type="submit" disabled={isSubmitting} className="w-full py-5 bg-orange-500 text-white font-black rounded-2xl shadow-xl shadow-orange-100 hover:bg-orange-600 disabled:bg-gray-400 transition-all flex justify-center items-center gap-2 text-lg">
+                                    <button type="submit" disabled={isSubmitting} className="w-full py-5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-2xl shadow-xl shadow-orange-500/30 dark:shadow-orange-900/50 hover:shadow-orange-500/50 hover:-translate-y-0.5 active:translate-y-0 disabled:from-gray-400 disabled:to-gray-400 dark:disabled:from-gray-700 dark:disabled:to-gray-700 disabled:shadow-none transition-all flex justify-center items-center gap-2 text-lg">
                                         {isSubmitting ? 'Reserving...' : 'Complete Reservation'} <ShieldCheck size={20} />
                                     </button>
                                     <button type="button" onClick={() => setShowGuestForm(false)} className="w-full py-3 text-gray-500 dark:text-gray-400 font-bold hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
