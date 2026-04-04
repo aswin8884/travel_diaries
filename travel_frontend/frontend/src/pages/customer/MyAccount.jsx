@@ -5,8 +5,8 @@ import axios from 'axios';
 import { isValidPhoneForCountry, phoneHint } from '../../utils/validate';
 import PhoneInput, { COUNTRIES } from '../../components/global/PhoneInput';
 
-const inputCls = "w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-750 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium";
-const inputWithIconCls = "w-full pl-12 pr-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-750 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium";
+const inputCls = "w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium autofill-dark";
+const inputWithIconCls = "w-full pl-12 pr-5 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium autofill-dark";
 const labelCls = "block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5";
 
 const MyAccount = () => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, MapPin, AlignLeft, UploadCloud, Images, Save, Star } from 'lucide-react';
+import { ArrowLeft, MapPin, AlignLeft, UploadCloud, Images, Save } from 'lucide-react';
 
 const DestinationEdit = () => {
     const { id } = useParams();
@@ -13,7 +13,6 @@ const DestinationEdit = () => {
         long_description: '',
         latitude: '',
         longitude: '',
-        rating: '' // 🔥 Added Rating
     });
     
     const [newImage, setNewImage] = useState(null);
@@ -34,7 +33,6 @@ const DestinationEdit = () => {
                     long_description: dest.long_description || '',
                     latitude: dest.latitude || '',
                     longitude: dest.longitude || '',
-                    rating: dest.rating || '' // 🔥 Pre-fill Rating
                 });
                 setPreview(dest.image);
             } catch (error) {
@@ -56,8 +54,7 @@ const DestinationEdit = () => {
         formData.append('long_description', editForm.long_description);
         formData.append('latitude', editForm.latitude);
         formData.append('longitude', editForm.longitude);
-        formData.append('rating', editForm.rating); // 🔥 Append Rating
-        
+
         if (newImage) formData.append('image', newImage);
         newGallery.forEach(file => {
             formData.append('gallery_images', file);
@@ -121,13 +118,6 @@ const DestinationEdit = () => {
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2"><MapPin size={16} className="text-indigo-500"/> Longitude</label>
                                 <input type="number" step="any" required value={editForm.longitude} onChange={(e) => setEditForm({...editForm, longitude: e.target.value})} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all font-medium text-lg" />
-                            </div>
-
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                                    <Star size={16} className="text-yellow-500" /> Star Rating (1.0 - 5.0)
-                                </label>
-                                <input type="number" step="0.1" min="1" max="5" required value={editForm.rating} onChange={(e) => setEditForm({...editForm, rating: e.target.value})} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all font-medium text-lg" />
                             </div>
 
                             <div className="p-5 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-2xl border border-indigo-100 dark:border-indigo-900">

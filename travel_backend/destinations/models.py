@@ -12,8 +12,6 @@ class Destination(models.Model):
     long_description = models.TextField(default='Detailed description here')
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
-    # Legacy admin-set rating kept for backward compatibility; display uses avg_user_rating instead.
-    rating = models.FloatField(default=0.0)
     image = models.ImageField(upload_to='destinations/')
     is_featured = models.BooleanField(default=False)
 

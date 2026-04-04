@@ -99,6 +99,28 @@ body {
 ::selection { background: #3b82f620; color: #1e40af; }
 .dark ::selection { background: #3b82f630; color: #93c5fd; }
 
+/* ===== AUTOFILL DARK MODE FIX ===== */
+/* Prevent browser autofill from overriding dark backgrounds */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark textarea:-webkit-autofill,
+.dark select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #1f2937 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #f9fafb inset !important;
+  -webkit-text-fill-color: #111827 !important;
+  caret-color: #111827;
+}
+
 /* ===== SMOOTH THEME TRANSITIONS (page-level elements only) ===== */
 body, nav, aside, header, footer, main,
 .theme-transition {

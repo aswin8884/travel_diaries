@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapPin, AlignLeft, Star, ArrowLeft, PenTool, Trash2, Image as ImageIcon } from 'lucide-react';
+import { MapPin, AlignLeft, ArrowLeft, PenTool, Trash2, Image as ImageIcon } from 'lucide-react';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -89,9 +89,6 @@ const DestinationView = () => {
                             <MapPin size={15} /> Destination
                         </div>
                         
-                        <div className="inline-flex items-center gap-1 px-3.5 py-1.5 bg-yellow-50 text-yellow-600 rounded-full text-xs font-black uppercase tracking-widest shadow-sm border border-yellow-100">
-                            <Star size={15} fill="currentColor" /> {dest.rating || '0.0'} Rating
-                        </div>
                     </div>
 
                     <h2 className="text-5xl md:text-6xl font-black text-gray-900 tracking-tighter mb-4">{dest.name}</h2>

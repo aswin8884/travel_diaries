@@ -31,7 +31,7 @@ class PostImageInline(admin.TabularInline):
 @admin.register(Destination)
 class DestinationAdmin(admin.ModelAdmin):
     inlines = [DestinationImageInline]
-    list_display = ['name', 'rating', 'is_featured']
+    list_display = ['name', 'is_featured']
     list_filter = ['is_featured']
     search_fields = ['name']
 
