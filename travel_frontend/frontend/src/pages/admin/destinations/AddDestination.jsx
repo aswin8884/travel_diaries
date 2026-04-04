@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { UploadCloud, MapPin, AlignLeft, ArrowLeft, Save, Images, Star } from 'lucide-react';
+import { UploadCloud, MapPin, AlignLeft, ArrowLeft, Save, Images } from 'lucide-react';
 import axios from 'axios';
 
 const AddDestination = () => {
@@ -11,8 +11,6 @@ const AddDestination = () => {
     const [longDesc, setLongDesc] = useState('');
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
-    const [rating, setRating] = useState(''); // 🔥 Added Rating State
-    
     const [image, setImage] = useState(null); 
     const [preview, setPreview] = useState(null);
     const [gallery, setGallery] = useState([]);
@@ -43,8 +41,6 @@ const AddDestination = () => {
         formData.append('long_description', longDesc);
         formData.append('latitude', latitude);
         formData.append('longitude', longitude);
-        formData.append('rating', rating); // 🔥 Appended Rating
-        
         if (image) formData.append('image', image);
         gallery.forEach(file => {
             formData.append('gallery_images', file);
@@ -112,12 +108,6 @@ const AddDestination = () => {
                                 <input type="number" step="any" required value={longitude} onChange={(e) => setLongitude(e.target.value)} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all font-medium text-lg" placeholder="2.3522" />
                             </div>
 
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                                    <Star size={16} className="text-yellow-500" /> Star Rating (1.0 - 5.0)
-                                </label>
-                                <input type="number" step="0.1" min="1" max="5" required value={rating} onChange={(e) => setRating(e.target.value)} className="w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl outline-none focus:bg-white dark:focus:bg-gray-700 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 transition-all font-medium text-lg" placeholder="4.9" />
-                            </div>
 
                             <div className="p-5 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-2xl border border-indigo-100 dark:border-indigo-900">
                                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2"><UploadCloud size={16} className="text-indigo-600"/> Main Cover Image</label>
