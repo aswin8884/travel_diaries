@@ -248,7 +248,7 @@ const RestaurantDetails = () => {
                                     </div>
                                     <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
                                         <label className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase mb-2">Time</label>
-                                        <select value={time} onChange={(e)=>setTime(e.target.value)} className="w-full bg-transparent font-bold text-gray-900 dark:text-white outline-none cursor-pointer">
+                                        <select value={time} onChange={(e)=>setTime(e.target.value)} className="w-full bg-transparent dark:bg-gray-800 font-bold text-gray-900 dark:text-white outline-none cursor-pointer dark:[color-scheme:dark]">
                                             <option value="">Select a time</option>
                                             {timeSlots.map(slot => (
                                                 <option key={slot} value={slot}>{slot}</option>
